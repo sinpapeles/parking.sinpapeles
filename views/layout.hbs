@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Parking Sinpapeles</title>
+  <style>
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+    }
+
+    a {
+      color: rgba(255, 255, 255, .7)
+    }
+
+    .bgimg {
+      background-image: url('http://ns.falci.me/bg.jpg');
+      height: 100%;
+      background-position: center;
+      background-size: cover;
+      position: relative;
+      color: white;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 25px;
+    }
+
+    .topleft {
+      position: absolute;
+      top: 0;
+      left: 16px;
+    }
+
+    .bottomleft {
+      position: absolute;
+      bottom: 0;
+      left: 16px;
+      right: 16px;
+      font-size: .6em;
+      display: flex;
+    }
+
+    .bottomleft>* {
+      margin-right: 10px;
+    }
+
+    .middle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    hr {
+      margin: auto;
+      width: 40%;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      transition: opacity 500ms;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .overlay:target {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .popup {
+      margin: 70px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 5px;
+      width: 30%;
+      min-width: 600px;
+      position: relative;
+      transition: all 5s ease-in-out;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+
+    .popup a {
+      color: #00F
+    }
+
+    .popup h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .popup .close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      transition: all 200ms;
+      font-size: 30px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .popup .close:hover {
+      color: #06D85F;
+    }
+
+    .popup .content {
+      max-height: 30%;
+      overflow: auto;
+    }
+
+    .donate {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bgimg">
+    <div class="topleft">
+      <p>Parking Sinpapeles</p>
+    </div>
+    <div class="middle">
+      {{{body}}}
+    </div>
+    <div class="bottomleft">
+      <a href="#add">Park your domain</a>
+      <a href="#donate">Donate</a>
+      <a href="https://t.me/hnsparking">Telegram</a>
+    </div>
+  </div>
+
+  <div id="add" class="overlay">
+    <div class="popup">
+      <h2>Add your domain to Parking Sinpapeles</h2>
+      <a class="close" href="#">×</a>
+      <div class="content">
+        <p>You only need to update your DNS registry and add the following:</p>
+        <ul>
+          <li><code>NS ns.hnsparking.</code></li>
+          <li><code>TXT parking=http://example.com</code></li>
+        </ul>
+        <p>The TXT record must be a link. It will be used to get in contact (it can be
+          a <a href="https://en.wikipedia.org/wiki/Mailto">mailto</a> link)</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="donate" class="overlay">
+    <div class="popup">
+      <h2>Donate to Parking Sinpapeles</h2>
+      <a class="close" href="#">×</a>
+      <div class="content">
+        <p>This is a free service, maintained by donations.</p>
+
+        <div class="donate">
+          <div>
+            <h2>Bitcoin</h2>
+            <code>1HtMMipMyUxassJfS13zZ5oLNmG6zdmG2K</code>
+          </div>
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?data=1HtMMipMyUxassJfS13zZ5oLNmG6zdmG2K&size=220x220&margin=0"
+            alt="1HtMMipMyUxassJfS13zZ5oLNmG6zdmG2K" />
+        </div>
+        <hr />
+        <div class="donate" style="text-align: right;">
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?data=hs1qwrvjrp6wydwtq7hv4n2cuhcmx90k3dcgqqxxn5&size=220x220&margin=0"
+            alt="hs1qwrvjrp6wydwtq7hv4n2cuhcmx90k3dcgqqxxn5" /><br />
+          <div>
+            <h2>Handshake</h2>
+            <code>hs1qwrvjrp6wydwtq7hv4n2cuhcmx90k3dcgqqxxn5</code>
+          </div>
+        </div>
+
+        <hr />
+
+      </div>
+      <div class="donate">
+        <style>
+          .bmc-button img {
+            height: 34px !important;
+            width: 35px !important;
+            margin-bottom: 1px !important;
+            box-shadow: none !important;
+            border: none !important;
+            vertical-align: middle !important;
+          }
+
+          .bmc-button {
+            padding: 7px 15px 7px 10px !important;
+            line-height: 35px !important;
+            height: 51px !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            color: #FFFFFF !important;
+            background-color: #FF813F !important;
+            border-radius: 5px !important;
+            border: 1px solid transparent !important;
+            padding: 7px 15px 7px 10px !important;
+            font-size: 22px !important;
+            letter-spacing: 0.6px !important;
+            box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;
+            -webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
+            margin: 0 auto !important;
+            font-family: 'Cookie', cursive !important;
+            -webkit-box-sizing: border-box !important;
+            box-sizing: border-box !important;
+          }
+
+          .bmc-button:hover,
+          .bmc-button:active,
+          .bmc-button:focus {
+            -webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
+            text-decoration: none !important;
+            box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
+            opacity: 0.85 !important;
+            color: #FFFFFF !important;
+          }
+        </style>
+        <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button"
+          target="_blank" href="https://www.buymeacoffee.com/falci"><img
+            src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span
+            style="margin-left:5px;font-size:28px !important;">Buy me a coffee</span></a>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
