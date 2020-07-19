@@ -1,10 +1,11 @@
 const { exec } = require("child_process");
 
-const DNS_SERVER = "192.168.1.55";
+const DNS_SERVER = process.env.DNS_SERVER || "127.0.0.1";
 
 const getTXT = (domain) =>
   new Promise((resolve, reject) => {
-    if (/^[a-z0-9-._]+$/.test(domain)) {
+    console.log({ domain });
+    if (!/^[a-z0-9-._]+$/.test(domain)) {
       return new Promise.reject();
     }
 
@@ -26,4 +27,9 @@ const getTXT = (domain) =>
     });
   });
 
-module.exports = { getTXT };
+const isLink = (txt) =>
+  ["mailto", "http", "https"].some(
+    (protocol) => txt.indexOf(`${protocol}://`) === 0
+  );
+
+module.exports = { getTXT, isLink };
