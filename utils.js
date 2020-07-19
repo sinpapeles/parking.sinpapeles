@@ -10,7 +10,7 @@ const getTXT = (domain) =>
       return new Promise.reject();
     }
 
-    exec(`dig @${DNS_SERVER} ${domain} TXT +short`, (error, out) => {
+    exec(`dig @${DNS_SERVER} ${domain} -p 12053 TXT +short`, (error, out) => {
       if (error) {
         return reject(error);
       }
