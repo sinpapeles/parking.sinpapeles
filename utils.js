@@ -1,6 +1,7 @@
 const { exec } = require("child_process");
 
 const DNS_SERVER = process.env.DNS_SERVER || "127.0.0.1";
+console.log({ DNS_SERVER });
 
 const getTXT = (domain) =>
   new Promise((resolve, reject) => {

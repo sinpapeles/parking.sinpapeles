@@ -3,7 +3,7 @@ const router = express.Router();
 const { getTXT, isLink } = require("../utils");
 
 router.get("/", async (req, res, next) => {
-  const host = "xn--um8h" || req.get("host");
+  const host = req.get("host");
 
   if (host === "parking.sinpapeles") {
     res.render("index");
