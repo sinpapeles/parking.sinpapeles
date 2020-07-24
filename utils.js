@@ -63,10 +63,35 @@ const getSubdomainSuggestion = (host) => {
   }
 };
 
+const getStats = (db, domain, value) => {
+  const stats = db
+    .prepare("SELECT views, clicks FROM domains WHERE name = ?")
+    .get(domain);
+
+  if (!stats) {
+    db.prepare(
+      "INSERT INTO domains (name, length, value, views) VALUES (?, ?, ?, 1) "
+    ).run(domain, domain.length, value);
+    return { views: 0, clicks: 0 };
+  } else {
+    db.prepare(
+      "UPDATE domains SET views = views+1, value=? WHERE name = ?"
+    ).run(value, domain);
+
+    return stats;
+  }
+};
+
+const updateClicks = (db, domain) => {
+  db.prepare("UPDATE domains SET clicks = clicks+1 WHERE name = ?").run(domain);
+};
+
 module.exports = {
   getTXT,
   isLink,
   isPrice,
   getPunyCode,
   getSubdomainSuggestion,
+  getStats,
+  updateClicks,
 };

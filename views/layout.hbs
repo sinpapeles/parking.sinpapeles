@@ -44,6 +44,12 @@
       margin-right: 10px;
     }
 
+    .bottomleft .right {
+      flex-grow: 1;
+      text-align: right;
+    }
+
+
     .middle {
       position: absolute;
       top: 50%;
@@ -147,6 +153,13 @@
       <a href="#add">Park your domain</a>
       <a href="#donate">Donate</a>
       <a href="https://t.me/parking_sinpapale">Telegram</a>
+
+      {{#if stats}}
+      <div class="right">
+        {{#if stats.views}}<span>Page views: {{stats.views}}</span>{{/if}}
+        {{#if stats.clicks}}<span>Clicks: {{stats.clicks}}</span>{{/if}}
+      </div>
+      {{/if}}
     </div>
   </div>
 
