@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS domains (
     length integer,
     value text,
 	views integer DEFAULT 0,
-	clicks integer DEFAULT 0,
+	clicks integer DEFAULT 0
 ) WITHOUT ROWID;
 
 CREATE INDEX length ON domains(length);
