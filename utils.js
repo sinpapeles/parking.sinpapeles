@@ -1,16 +1,18 @@
 const { exec } = require("child_process");
+const camelCase = require("camelcase");
 
-const DNS_SERVER = process.env.DNS_SERVER || "127.0.0.1";
-console.log({ DNS_SERVER });
+const DNS_SERVER = process.env.DNS_SERVER || "server.falci.me";
+const DNS_PORT = process.env.DNS_PORT || "12053";
+console.log({ DNS_SERVER, DNS_PORT });
 
 const getTXT = (domain) =>
   new Promise((resolve, reject) => {
-    console.log({ domain });
     if (!/^[a-z0-9-._]+$/.test(domain)) {
       return new Promise.reject();
     }
 
-    exec(`dig @${DNS_SERVER} ${domain} -p 12053 TXT +short`, (error, out) => {
+    const command = `dig @${DNS_SERVER} -p ${DNS_PORT} ${domain} TXT +short`;
+    exec(command, (error, out) => {
       if (error) {
         return reject(error);
       }
@@ -22,7 +24,8 @@ const getTXT = (domain) =>
           .filter((line) => line.indexOf("parking") === 0)
           .reduce((data, line) => {
             const [key, value] = line.split(/=(.+)/);
-            return { ...data, [key]: value };
+            const camel = camelCase(key);
+            return { ...data, [camel]: value };
           }, {})
       );
     });
@@ -33,4 +36,6 @@ const isLink = (txt) =>
     (protocol) => txt.indexOf(`${protocol}://`) === 0
   );
 
-module.exports = { getTXT, isLink };
+const isPrice = (txt) => /^[0-9]{1,15}(\.[0-9]{1,8})? ?[A-Z]{1,5}$/.test(txt);
+
+module.exports = { getTXT, isLink, isPrice };

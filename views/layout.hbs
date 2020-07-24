@@ -80,7 +80,7 @@
       background: #fff;
       border-radius: 5px;
       width: 30%;
-      min-width: 600px;
+      min-width: 730px;
       position: relative;
       transition: all 5s ease-in-out;
       font-family: Tahoma, Arial, sans-serif;
@@ -115,6 +115,16 @@
       overflow: auto;
     }
 
+    .popup .content table {
+      border-collapse: collapse;
+    }
+
+    .popup .content th,
+    .popup .content td {
+      padding: 5px 8px;
+      text-align: left;
+    }
+
     .donate {
       display: flex;
       justify-content: space-around;
@@ -146,12 +156,30 @@
       <a class="close" href="#">×</a>
       <div class="content">
         <p>You only need to update your DNS registry and add the following:</p>
-        <ul>
-          <li><code>NS parking.sinpapeles.</code></li>
-          <li><code>TXT parking=http://example.com</code></li>
-        </ul>
-        <p>The TXT record must be a link. It will be used to get in contact (it can be
-          a <a href="https://en.wikipedia.org/wiki/Mailto">mailto</a> link)</p>
+        <table border="1">
+          <tr>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>NS</td>
+            <td><code>parking.sinpapeles.</code></td>
+            <td>Required. This will send the request to our server.</td>
+          </tr>
+          <tr>
+            <td>TXT</td>
+            <td><code>parking=http://example.com</code></td>
+            <td>Required. Must be a link. It will be used to get in contact.<br />It can be
+              a <a href="https://en.wikipedia.org/wiki/Mailto">mailto</a> link.</td>
+          </tr>
+          <tr>
+            <td>TXT</td>
+            <td><code>parking-value=10000000 HNS</code></td>
+            <td>Optional. If present, it must to be like "0000.0000000 CODE".<br />
+              Code like "BTC", "USD", "HNS".</td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>

@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { getTXT, isLink } = require("../utils");
+const update = require("./update");
+const { getTXT, isLink, isPrice } = require("../utils");
+
+router.use(update);
 
 router.get("/", async (req, res, next) => {
   const host = req.get("host");
@@ -11,7 +14,14 @@ router.get("/", async (req, res, next) => {
 
   const data = await getTXT(host).catch(() => false);
   if (data.parking && isLink(data.parking)) {
-    res.render("parking", { host, contact: data.parking });
+    const hasPrice = isPrice(data.parkingValue);
+
+    res.render("parking", {
+      host,
+      contact: data.parking,
+      hasPrice,
+      price: data.parkingValue,
+    });
   } else {
     res.render("missing", { host });
   }

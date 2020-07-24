@@ -1,6 +1,10 @@
 <h1>{{host}}</h1>
-<hr>
+{{#if hasPrice}}
+<p>is available for <span class="price">{{price}}</span></p>
+{{else}}
 <p>is available</p>
+{{/if}}
+<hr>
 <p>
     <a href="{{contact}}">Get in touch</a>
 </p>
