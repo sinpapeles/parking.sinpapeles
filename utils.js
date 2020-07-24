@@ -1,5 +1,6 @@
 const { exec } = require("child_process");
 const camelCase = require("camelcase");
+const punycode = require("punycode");
 
 const DNS_SERVER = process.env.DNS_SERVER || "server.falci.me";
 const DNS_PORT = process.env.DNS_PORT || "12053";
@@ -38,4 +39,13 @@ const isLink = (txt) =>
 
 const isPrice = (txt) => /^[0-9]{1,15}(\.[0-9]{1,8})? ?[A-Z]{1,5}$/.test(txt);
 
-module.exports = { getTXT, isLink, isPrice };
+const getPunyCode = (txt) => {
+  try {
+    const punyCode = punycode.toUnicode(txt);
+    return punyCode !== txt && punyCode;
+  } catch (e) {
+    return false;
+  }
+};
+
+module.exports = { getTXT, isLink, isPrice, getPunyCode };
