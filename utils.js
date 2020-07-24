@@ -1,6 +1,7 @@
 const { exec } = require("child_process");
 const camelCase = require("camelcase");
 const punycode = require("punycode");
+const { tldExists, getDomain } = require("tldjs");
 
 const DNS_SERVER = process.env.DNS_SERVER || "server.falci.me";
 const DNS_PORT = process.env.DNS_PORT || "12053";
@@ -48,4 +49,24 @@ const getPunyCode = (txt) => {
   }
 };
 
-module.exports = { getTXT, isLink, isPrice, getPunyCode };
+const getSubdomainSuggestion = (host) => {
+  const parts = host.split(".");
+
+  if (tldExists(host)) {
+    const domain = getDomain(host);
+    return host !== domain && domain;
+  }
+
+  if (parts.length > 1) {
+    const [, ...suggestion] = parts;
+    return suggestion.join(".");
+  }
+};
+
+module.exports = {
+  getTXT,
+  isLink,
+  isPrice,
+  getPunyCode,
+  getSubdomainSuggestion,
+};

@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const update = require("./update");
-const { getTXT, isLink, isPrice, getPunyCode } = require("../utils");
+const {
+  getTXT,
+  isLink,
+  isPrice,
+  getPunyCode,
+  getSubdomainSuggestion,
+} = require("../utils");
 
 router.use(update);
 
@@ -26,7 +32,7 @@ router.get("/", async (req, res, next) => {
       punyCode,
     });
   } else {
-    res.render("missing", { host });
+    res.render("missing", { host, suggestion: getSubdomainSuggestion(host) });
   }
 });
 
