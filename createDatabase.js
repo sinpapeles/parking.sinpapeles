@@ -10,5 +10,14 @@ CREATE TABLE IF NOT EXISTS domains (
 	clicks integer DEFAULT 0
 ) WITHOUT ROWID;
 
-CREATE INDEX length ON domains(length);
+CREATE INDEX IF NOT EXISTS length ON domains(length);
 `);
+
+try {
+  db.exec(`
+ALTER TABLE domains
+ADD COLUMN active integer DEFAULT 1;
+`);
+} catch (e) {
+  console.log('Column "active" already exists');
+}

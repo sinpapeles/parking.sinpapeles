@@ -2,29 +2,30 @@ const express = require("express");
 const { v4: uuid } = require("uuid");
 const axios = require("axios");
 const router = express.Router();
+const { updateStatus, verifyFullDomain } = require("../utils");
 
 const memory = {};
 
 router.post("/update", (req, res) => {
   const { names } = req.body;
 
-  names.forEach(async (name) => {
-    const secret = uuid();
-    memory[name] = secret;
+  names
+    .filter((name) => verifyFullDomain(name))
+    .forEach(async (name) => {
+      const secret = uuid();
+      memory[name] = secret;
 
-    try {
-      const { code } = (await axios.get(`http://${name}/update`)).data;
-      const isValid = code === secret;
-      // update database: {name, isValid}
+      try {
+        const { code } = (await axios.get(`http://${name}/update`)).data;
+        const isValid = code === secret;
+        updateStatus(req.body, name, isValid);
+      } catch (e) {
+        updateStatus(req.body, name, false);
+        console.error(e);
+      }
 
-      console.log({ name, isValid });
-    } catch (e) {
-      // remove from database
-      console.error(e);
-    }
-
-    delete memory[name];
-  });
+      delete memory[name];
+    });
 
   res.json({ ok: true });
 });

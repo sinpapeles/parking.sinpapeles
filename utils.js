@@ -7,9 +7,65 @@ const DNS_SERVER = process.env.DNS_SERVER || "server.falci.me";
 const DNS_PORT = process.env.DNS_PORT || "12053";
 console.log({ DNS_SERVER, DNS_PORT });
 
+// prettier-ignore
+const CHARSET = new Uint8Array([
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0,
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
+  0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+  2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 4,
+  0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+  3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0
+]);
+
+const verifyFullDomain = (str) => {
+  if (typeof str !== "string") {
+    return false;
+  }
+
+  return str.split(".").every(verifyString);
+};
+
+const verifyString = (str) => {
+  if (typeof str !== "string") {
+    return false;
+  }
+
+  if (str.length === 0) return false;
+
+  if (str.length > 63) return false;
+
+  for (let i = 0; i < str.length; i++) {
+    const ch = str.charCodeAt(i);
+
+    // No unicode characters.
+    if (ch & 0xff80) return false;
+
+    const type = CHARSET[ch];
+
+    switch (type) {
+      case 0: // non-printable
+        return false;
+      case 1: // 0-9
+        break;
+      case 2: // A-Z
+        return false;
+      case 3: // a-z
+        break;
+      case 4: // - and _
+        // Do not allow at end or beginning.
+        if (i === 0 || i === str.length - 1) return false;
+        break;
+    }
+  }
+
+  return true;
+};
+
 const getTXT = (domain) =>
   new Promise((resolve, reject) => {
-    if (!/^[a-z0-9-._]+$/.test(domain)) {
+    if (!verifyFullDomain(domain)) {
       return new Promise.reject();
     }
 
@@ -82,9 +138,13 @@ const getStats = (db, domain, value) => {
   }
 };
 
-const updateClicks = (db, domain) => {
+const updateClicks = (db, domain) =>
   db.prepare("UPDATE domains SET clicks = clicks+1 WHERE name = ?").run(domain);
-};
+
+const updateStatus = (db, domain, active) =>
+  db
+    .prepare("UPDATE domains SET active = ? WHERE name = ?")
+    .run(active ? 1 : 0, domain);
 
 module.exports = {
   getTXT,
@@ -94,4 +154,7 @@ module.exports = {
   getSubdomainSuggestion,
   getStats,
   updateClicks,
+  updateStatus,
+  verifyString,
+  verifyFullDomain,
 };
