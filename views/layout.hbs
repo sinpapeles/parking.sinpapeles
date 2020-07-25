@@ -3,6 +3,7 @@
 
 <head>
   <title>Parking Sinpapeles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
     body,
     html {
@@ -23,39 +24,54 @@
       color: white;
       font-family: "Courier New", Courier, monospace;
       font-size: 25px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    .topleft {
-      position: absolute;
-      top: 0;
-      left: 16px;
+    .top {
+      padding: 0 20px
     }
 
-    .bottomleft {
-      position: absolute;
-      bottom: 0;
-      left: 16px;
-      right: 16px;
+    .bottom {
       font-size: .6em;
       display: flex;
     }
 
-    .bottomleft>* {
+    .bottom>* {
       margin-right: 10px;
     }
 
-    .bottomleft .right {
+    .bottom .right {
       flex-grow: 1;
       text-align: right;
+      white-space: nowrap;
     }
 
-
     .middle {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      width: 500px;
+      align-self: center;
       text-align: center;
+      ;
+    }
+
+    @media only screen and (max-width: 800px) {
+      .middle {
+        width: 90vw;
+      }
+
+      .bottom .left,
+      .bottom .right {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-start;
+      }
+
+      h1,
+      h2 {
+        margin: 0px !important;
+      }
     }
 
     hr {
@@ -143,16 +159,18 @@
 <body>
 
   <div class="bgimg">
-    <div class="topleft">
+    <div class="top">
       <p>Parking Sinpapeles</p>
     </div>
     <div class="middle">
       {{{body}}}
     </div>
-    <div class="bottomleft">
-      <a href="#add">Park your domain</a>
-      <a href="#donate">Donate</a>
-      <a href="https://t.me/parking_sinpapale">Telegram</a>
+    <div class="bottom">
+      <div class="left">
+        <a href="#add">Park your domain</a>
+        <a href="#donate">Donate</a>
+        <a href="https://t.me/parking_sinpapale">Telegram</a>
+      </div>
 
       {{#if stats}}
       <div class="right">
