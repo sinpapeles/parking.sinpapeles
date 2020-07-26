@@ -15,7 +15,8 @@
 <body>
   <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
     <div class="container">
-      <a href="{{#if host}}//parking.sinpapeles{{/if}}/" class="navbar-brand">Parking Sinpapeles</a>
+      <a href="{{#unless isICANN}}{{#if host}}http://parking.sinpapeles{{/if}}{{/unless}}/" class="navbar-brand">Parking
+        Sinpapeles</a>
 
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav">
@@ -40,7 +41,8 @@
     <footer id="footer">
       <div class="container">
         <ul class="d-flex list-unstyled">
-          <li class="mr-2 d-none d-sm-block"><a href="//parking.sinpapeles">Parking Sinpapeles</a></li>
+          {{#unless isICANN}}<li class="mr-2 d-none d-sm-block"><a href="http://parking.sinpapeles">Parking
+              Sinpapeles</a></li>{{/unless}}
           <li class="mr-2"><a href="/about">About</a></li>
           <li class="mr-2"><a href="/donate">Donate</a></li>
           <li class="mr-2"><a href="https://t.me/parking_sinpapale" target="_blank">Telegram</a></li>

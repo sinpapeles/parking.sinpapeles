@@ -1,3 +1,4 @@
+const { tldExists } = require("tldjs");
 const express = require("express");
 const router = express.Router();
 const update = require("./update");
@@ -22,6 +23,7 @@ router.get("/", async (req, res, next) => {
   }
 
   const data = await getName(req.db, host);
+  const isICANN = tldExists(host);
 
   if (data && data.contact) {
     const hasPrice = isPrice(data.value);
@@ -30,6 +32,7 @@ router.get("/", async (req, res, next) => {
     updateViews(req.db, host);
 
     res.render("parking", {
+      isICANN,
       host,
       hasPrice,
       price: data.value,
@@ -40,7 +43,11 @@ router.get("/", async (req, res, next) => {
       },
     });
   } else {
-    res.render("missing", { host, suggestion: getSubdomainSuggestion(host) });
+    res.render("missing", {
+      isICANN,
+      host,
+      suggestion: getSubdomainSuggestion(host),
+    });
   }
 });
 
