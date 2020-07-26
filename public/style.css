@@ -3,11 +3,12 @@
 }
 
 .jumbotron {
-  margin: 20vh auto 20px;
+  margin: 10vh auto 20px;
 }
 .parking {
   text-align: center;
   width: 500px;
+  max-width: calc(100vw - 100px);
   margin: 0 auto;
 }
 
