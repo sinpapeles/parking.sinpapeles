@@ -1,0 +1,15 @@
+<h1>Domains</h1>
+
+<table class="table">
+    {{#each domains}}
+    <tr>
+        <td>
+            <a href="//{{this.name}}/">{{this.name}}</a>
+            {{#if this.punyCode}}
+            ({{this.punyCode}})
+            {{/if}}
+        </td>
+        <td>{{this.value}}</td>
+    </tr>
+    {{/each}}
+</table>

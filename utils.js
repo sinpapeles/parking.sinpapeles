@@ -119,42 +119,56 @@ const getSubdomainSuggestion = (host) => {
   }
 };
 
-const getStats = (db, domain, value) => {
-  const stats = db
-    .prepare("SELECT views, clicks FROM domains WHERE name = ?")
-    .get(domain);
-
-  if (!stats) {
-    db.prepare(
-      "INSERT INTO domains (name, length, value, views) VALUES (?, ?, ?, 1) "
-    ).run(domain, domain.length, value);
-    return { views: 0, clicks: 0 };
-  } else {
-    db.prepare(
-      "UPDATE domains SET views = views+1, value=? WHERE name = ?"
-    ).run(value, domain);
-
-    return stats;
-  }
-};
+const getName = (db, domain) =>
+  db.prepare("SELECT * FROM domains WHERE name = ?").get(domain);
 
 const updateClicks = (db, domain) =>
   db.prepare("UPDATE domains SET clicks = clicks+1 WHERE name = ?").run(domain);
 
-const updateStatus = (db, domain, active) =>
+const updateViews = (db, domain) =>
+  db.prepare("UPDATE domains SET views = views+1 WHERE name = ?").run(domain);
+
+const saveName = (db, name, contact, value) => {
+  try {
+    return db
+      .prepare(
+        `INSERT INTO domains (name, length, contact, value, active)
+                      VALUES ($name, $length, $contact, $value, $active)
+                  ON CONFLICT(name)
+                   DO UPDATE SET contact=$contact, value=$value, active=$active;`
+      )
+      .run({
+        name,
+        contact,
+        value,
+        length: name.length,
+        active: !!value && !!contact ? 1 : 0,
+      });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const list = (db) =>
   db
-    .prepare("UPDATE domains SET active = ? WHERE name = ?")
-    .run(active ? 1 : 0, domain);
+    .prepare(`SELECT * FROM domains ORDER BY name`)
+    .all()
+    .map((domain) => ({
+      ...domain,
+      punyCode: getPunyCode(domain.name),
+    }));
 
 module.exports = {
+  list,
   getTXT,
   isLink,
   isPrice,
   getPunyCode,
   getSubdomainSuggestion,
-  getStats,
+  getName,
+  updateViews,
   updateClicks,
-  updateStatus,
+  saveName,
   verifyString,
   verifyFullDomain,
 };

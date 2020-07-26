@@ -1,15 +1,36 @@
-{{#if punyCode}}
-<h1 style="font-size: 3.5em;margin:0;">{{punyCode}}</h1>
-<h2>{{host}}</h2>
-{{else}}
-<h1>{{host}}</h1>
-{{/if}}
-{{#if hasPrice}}
-<p>is available for <span class="price">{{price}}</span></p>
-{{else}}
-<p>is available</p>
-{{/if}}
-<hr>
-<p>
-    <a href="/contact">Get in touch</a>
-</p>
+<div class="jumbotron">
+    <div class="parking">
+        {{#if punyCode}}
+        <h1 style="font-size: 3.5em;margin:0;">{{punyCode}}</h1>
+        <h2>{{host}}</h2>
+        {{else}}
+        <h1>{{host}}</h1>
+        {{/if}}
+        {{#if hasPrice}}
+        <p>is available for <span class="price">{{price}}</span></p>
+        {{else}}
+        <p>is available</p>
+        {{/if}}
+        <hr />
+        <p>
+            <a href="/contact">Get in touch</a>
+        </p>
+
+        <hr />
+        {{#if stats}}
+        <div class="stats">
+            <span>
+                Page views:
+                <span class="badge badge-primary badge-pill">{{stats.views}}</span>
+            </span>
+            {{#if stats.clicks}}
+            <span class="ml-5">
+                Clicks:
+                <span class="badge badge-primary badge-pill">{{stats.clicks}}</span>
+            </span>
+            {{/if}}
+        </div>
+        {{/if}}
+    </div>
+
+</div>

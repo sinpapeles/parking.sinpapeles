@@ -1,0 +1,21 @@
+<h1>About</h1>
+
+<p><strong>Parking Sinpapeles</strong> is a free parking service.</p>
+<p>If you have a domain and want to sell it, we can provide a nice contact page for you.</p>
+
+<h2>How can I add a domain?</h2>
+<p>We read the data from the <a href="https://handshake.org/" target="_blank">HNS</a> blockchain.</p>
+<p>You need to update the domain's DNS:</p>
+<ul>
+    <li>Add a <code>NS parking.sinpapeles.</code> (the "."
+        in the end is important).</li>
+    <li>Add a <code>TXT parking=http://example.com/</code>. It must to me a link. We will use this link to create the
+        "Get in touch" link.<br />You can add a mailto link: <code>TXT parking=mailto://owner@example.com</code></li>
+    <li>Optionally, you can add the price: <code>TXT parking-value=1000 HNS</code>.</li>
+</ul>
+
+<h2>How can I remove a domain?</h2>
+<p>If you don't want to display the parking page, just remove the <code>NS</code> record from the DNS.</p>
+
+<h2>Need to talk to a human?</h2>
+<p>We have a <a href="https://t.me/parking_sinpapale" target="_blank">Telegram group</a>.</p>

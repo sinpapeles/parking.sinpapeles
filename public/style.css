@@ -1,0 +1,20 @@
+#main {
+  margin: 60px auto;
+}
+
+.jumbotron {
+  margin: 20vh auto 20px;
+}
+.parking {
+  text-align: center;
+  width: 500px;
+  margin: 0 auto;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--white);
+}

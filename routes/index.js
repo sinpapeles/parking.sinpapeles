@@ -2,39 +2,42 @@ const express = require("express");
 const router = express.Router();
 const update = require("./update");
 const {
-  getTXT,
-  isLink,
+  updateViews,
   isPrice,
   getPunyCode,
   getSubdomainSuggestion,
-  getStats,
+  getName,
   updateClicks,
+  list,
 } = require("../utils");
 
 router.use(update);
 
-router.get("/", async (req, res) => {
-  const host = encodeURIComponent(req.get("host"));
+router.get("/", async (req, res, next) => {
+  const host = encodeURIComponent("xn--um8h" || req.get("host"));
 
-  if (host === "parking.sinpapeles") {
-    res.render("index");
+  if (host === "parking.sinpapeles" || host === "localhost%3A2000") {
+    next();
+    return;
   }
 
-  const data = await getTXT(host).catch(() => false);
+  const data = await getName(req.db, host);
 
-  if (data.parking && isLink(data.parking)) {
-    const hasPrice = isPrice(data.parkingValue);
+  if (data && data.contact) {
+    const hasPrice = isPrice(data.value);
     const punyCode = getPunyCode(host);
 
-    const stats = getStats(req.db, host, data.parkingValue);
+    updateViews(req.db, host);
 
-    res.cookie("contact", data.parking);
     res.render("parking", {
       host,
       hasPrice,
-      price: data.parkingValue,
+      price: data.value,
       punyCode,
-      stats,
+      stats: {
+        clicks: data.clicks,
+        views: data.views,
+      },
     });
   } else {
     res.render("missing", { host, suggestion: getSubdomainSuggestion(host) });
@@ -43,14 +46,27 @@ router.get("/", async (req, res) => {
 
 router.get("/contact", async (req, res) => {
   const host = encodeURIComponent(req.get("host"));
-  const { contact } = req.cookies;
+  const data = await getName(req.db, host);
 
-  if (contact) {
+  if (data && data.contact) {
     updateClicks(req.db, host);
-    return res.redirect(contact);
+    return res.redirect(data.contact);
   }
 
   res.redirect("/");
+});
+
+router.get("/", (req, res) => {
+  const domains = list(req.db);
+  res.render("list", { domains });
+});
+
+router.get("/about", (req, res) => {
+  res.render("about");
+});
+
+router.get("/donate", (req, res) => {
+  res.render("donate");
 });
 
 module.exports = router;

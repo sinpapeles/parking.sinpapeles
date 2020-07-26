@@ -4,297 +4,52 @@
 <head>
   <title>Parking Sinpapeles</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <style>
-    body,
-    html {
-      height: 100%;
-      margin: 0;
-    }
-
-    a {
-      color: rgba(255, 255, 255, .7)
-    }
-
-    .bgimg {
-      background-image: url('bg.jpg');
-      height: 100%;
-      background-position: center;
-      background-size: cover;
-      position: relative;
-      color: white;
-      font-family: "Courier New", Courier, monospace;
-      font-size: 25px;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .top {
-      padding: 0 20px
-    }
-
-    .bottom {
-      font-size: .6em;
-      display: flex;
-    }
-
-    .bottom>* {
-      margin-right: 10px;
-    }
-
-    .bottom .right {
-      flex-grow: 1;
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    .middle {
-      width: 500px;
-      align-self: center;
-      text-align: center;
-      ;
-    }
-
-    @media only screen and (max-width: 800px) {
-      .middle {
-        width: 90vw;
-      }
-
-      .bottom .left,
-      .bottom .right {
-        display: flex;
-        flex-direction: column-reverse;
-        justify-content: flex-start;
-      }
-
-      h1,
-      h2 {
-        margin: 0px !important;
-      }
-    }
-
-    hr {
-      margin: auto;
-      width: 40%;
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.7);
-      transition: opacity 500ms;
-      visibility: hidden;
-      opacity: 0;
-    }
-
-    .overlay:target {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .popup {
-      margin: 70px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 5px;
-      width: 30%;
-      min-width: 730px;
-      position: relative;
-      transition: all 5s ease-in-out;
-      font-family: Tahoma, Arial, sans-serif;
-    }
-
-    .popup a {
-      color: #00F
-    }
-
-    .popup h2 {
-      margin-top: 0;
-      color: #333;
-    }
-
-    .popup .close {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      transition: all 200ms;
-      font-size: 30px;
-      font-weight: bold;
-      text-decoration: none;
-      color: #333;
-    }
-
-    .popup .close:hover {
-      color: #06D85F;
-    }
-
-    .popup .content {
-      max-height: 30%;
-      overflow: auto;
-    }
-
-    .popup .content table {
-      border-collapse: collapse;
-    }
-
-    .popup .content th,
-    .popup .content td {
-      padding: 5px 8px;
-      text-align: left;
-    }
-
-    .donate {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      margin: 15px 0;
-    }
-  </style>
+  <link rel="stylesheet" href="/bootstrap.min.css" />
+  {{!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> --}}
+  {{!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha512-I5TkutApDjnWuX+smLIPZNhw+LhTd8WrQhdCKsxCFRSvhFx2km8ZfEpNIhF9nq04msHhOkE8BMOBj5QE07yhMA=="
+    crossorigin="anonymous"></script> --}}
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+  <div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
+    <div class="container">
+      <a href="{{#if host}}//parking.sinpapeles{{/if}}/" class="navbar-brand">Parking Sinpapeles</a>
 
-  <div class="bgimg">
-    <div class="top">
-      <p>Parking Sinpapeles</p>
-    </div>
-    <div class="middle">
-      {{{body}}}
-    </div>
-    <div class="bottom">
-      <div class="left">
-        <a href="#add">Park your domain</a>
-        <a href="#donate">Donate</a>
-        <a href="https://t.me/parking_sinpapale">Telegram</a>
-      </div>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/donate">Donate</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://t.me/parking_sinpapale" target="_blank">Telegram</a>
+          </li>
+        </ul>
 
-      {{#if stats}}
-      <div class="right">
-        {{#if stats.views}}<span>Page views: {{stats.views}}</span>{{/if}}
-        {{#if stats.clicks}}<span>Clicks: {{stats.clicks}}</span>{{/if}}
-      </div>
-      {{/if}}
-    </div>
-  </div>
-
-  <div id="add" class="overlay">
-    <div class="popup">
-      <h2>Add your domain to Parking Sinpapeles</h2>
-      <a class="close" href="#">×</a>
-      <div class="content">
-        <p>You only need to update your DNS registry and add the following:</p>
-        <table border="1">
-          <tr>
-            <th>Type</th>
-            <th>Value</th>
-            <th>Description</th>
-          </tr>
-          <tr>
-            <td>NS</td>
-            <td><code>parking.sinpapeles.</code></td>
-            <td>Required. This will send the request to our server.</td>
-          </tr>
-          <tr>
-            <td>TXT</td>
-            <td><code>parking=http://example.com</code></td>
-            <td>Required. Must be a link. It will be used to get in contact.<br />It can be
-              a <a href="https://en.wikipedia.org/wiki/Mailto">mailto</a> link.</td>
-          </tr>
-          <tr>
-            <td>TXT</td>
-            <td><code>parking-value=10000000 HNS</code></td>
-            <td>Optional. If present, it must to be like "0000.0000000 CODE".<br />
-              Code like "BTC", "USD", "HNS".</td>
-          </tr>
-        </table>
       </div>
     </div>
   </div>
 
-  <div id="donate" class="overlay">
-    <div class="popup">
-      <h2>Donate to Parking Sinpapeles</h2>
-      <a class="close" href="#">×</a>
-      <div class="content">
-        <p>This is a free service, maintained by donations.</p>
+  <div class="container" id="main">
+    {{{body}}}
 
-        <div class="donate">
-          <div>
-            <h2>Bitcoin</h2>
-            <code>1HtMMipMyUxassJfS13zZ5oLNmG6zdmG2K</code>
-          </div>
-          <img
-            src="https://api.qrserver.com/v1/create-qr-code/?data=1HtMMipMyUxassJfS13zZ5oLNmG6zdmG2K&size=220x220&margin=0"
-            alt="1HtMMipMyUxassJfS13zZ5oLNmG6zdmG2K" />
-        </div>
-        <hr />
-        <div class="donate" style="text-align: right;">
-          <img
-            src="https://api.qrserver.com/v1/create-qr-code/?data=hs1qwrvjrp6wydwtq7hv4n2cuhcmx90k3dcgqqxxn5&size=220x220&margin=0"
-            alt="hs1qwrvjrp6wydwtq7hv4n2cuhcmx90k3dcgqqxxn5" /><br />
-          <div>
-            <h2>Handshake</h2>
-            <code>hs1qwrvjrp6wydwtq7hv4n2cuhcmx90k3dcgqqxxn5</code>
-          </div>
-        </div>
-
-        <hr />
-
+    <footer id="footer">
+      <div class="container">
+        <ul class="d-flex list-unstyled">
+          <li class="mr-2"><a href="//parking.sinpapeles">Parking Sinpapeles</a></li>
+          <li class="mr-2"><a href="/about">About</a></li>
+          <li class="mr-2"><a href="/donate">Donate</a></li>
+          <li class="mr-2"><a href="https://t.me/parking_sinpapale" target="_blank">Telegram</a></li>
+          <li class="flex-grow-1 text-right">We use no cookies</li>
+        </ul>
       </div>
-      <div class="donate">
-        <style>
-          .bmc-button img {
-            height: 34px !important;
-            width: 35px !important;
-            margin-bottom: 1px !important;
-            box-shadow: none !important;
-            border: none !important;
-            vertical-align: middle !important;
-          }
 
-          .bmc-button {
-            padding: 7px 15px 7px 10px !important;
-            line-height: 35px !important;
-            height: 51px !important;
-            text-decoration: none !important;
-            display: inline-flex !important;
-            color: #FFFFFF !important;
-            background-color: #FF813F !important;
-            border-radius: 5px !important;
-            border: 1px solid transparent !important;
-            padding: 7px 15px 7px 10px !important;
-            font-size: 22px !important;
-            letter-spacing: 0.6px !important;
-            box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;
-            -webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
-            margin: 0 auto !important;
-            font-family: 'Cookie', cursive !important;
-            -webkit-box-sizing: border-box !important;
-            box-sizing: border-box !important;
-          }
-
-          .bmc-button:hover,
-          .bmc-button:active,
-          .bmc-button:focus {
-            -webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
-            text-decoration: none !important;
-            box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;
-            opacity: 0.85 !important;
-            color: #FFFFFF !important;
-          }
-        </style>
-        <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button"
-          target="_blank" href="https://www.buymeacoffee.com/falci"><img
-            src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span
-            style="margin-left:5px;font-size:28px !important;">Buy me a coffee</span></a>
-      </div>
-    </div>
+    </footer>
   </div>
-
 </body>
 
 </html>
