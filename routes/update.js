@@ -20,6 +20,8 @@ router.post("/update", (req, res) => {
 
       saveName(req.db, name, contact, value);
     });
+
+    res.json({ data });
   });
 });
 
