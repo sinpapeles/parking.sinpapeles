@@ -14,7 +14,7 @@ const {
 router.use(update);
 
 router.get("/", async (req, res, next) => {
-  const host = encodeURIComponent("xn--um8h" || req.get("host"));
+  const host = encodeURIComponent(req.get("host"));
 
   if (host === "parking.sinpapeles" || host === "localhost%3A2000") {
     next();
