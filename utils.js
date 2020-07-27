@@ -90,8 +90,8 @@ const getTXT = (domain) =>
   });
 
 const isLink = (txt) =>
-  ["mailto", "http", "https"].some(
-    (protocol) => txt.indexOf(`${protocol}://`) === 0
+  ["mailto:", "http://", "https://"].some(
+    (protocol) => txt.indexOf(protocol) === 0
   );
 
 const isPrice = (txt) => /^[0-9]{1,15}(\.[0-9]{1,8})? ?[A-Z]{1,5}$/.test(txt);
