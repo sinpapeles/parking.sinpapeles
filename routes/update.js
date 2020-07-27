@@ -16,7 +16,7 @@ router.post("/update", (req, res) => {
 
     data.forEach(({ name, txt }) => {
       const contact = isLink(txt.parking) ? txt.parking : null;
-      const value = isPrice(txt.parkingValue) ? txt.parkingValue : -1;
+      const value = isPrice(txt.parkingValue) ? txt.parkingValue : 0;
 
       saveName(req.db, name, contact, value);
     });

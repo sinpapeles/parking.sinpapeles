@@ -16,7 +16,7 @@ const app = express();
 const hbs = exphbs.create({
   helpers: {
     isUnknownValue: function (arg1, options) {
-      return arg1 === "-1" ? options.fn(this) : options.inverse(this);
+      return !arg1 ? options.fn(this) : options.inverse(this);
     },
   },
 });
