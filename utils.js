@@ -142,7 +142,7 @@ const saveName = (db, name, contact, value) => {
         contact,
         value,
         length: name.length,
-        active: !!value && !!contact ? 1 : 0,
+        active: !!contact ? 1 : 0,
       });
   } catch (e) {
     console.log(e);
@@ -151,7 +151,7 @@ const saveName = (db, name, contact, value) => {
 
 const list = (db) =>
   db
-    .prepare(`SELECT * FROM domains ORDER BY name`)
+    .prepare(`SELECT * FROM domains WHERE active=1 ORDER BY name`)
     .all()
     .map((domain) => ({
       ...domain,
