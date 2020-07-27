@@ -4,15 +4,20 @@
 <p>If you have a domain and want to sell it, we can provide a nice contact page for you.</p>
 
 <h2>How can I add a domain?</h2>
-<p>We read the data from the <a href="https://handshake.org/" target="_blank">HNS</a> blockchain.</p>
 <p>You need to update the domain's DNS:</p>
 <ul>
-    <li>Add a <code>NS parking.sinpapeles.</code> (the "."
+    <li>Add a <code>NS parking.sinpapeles{{#if isICANN}}.xyz{{/if}}.</code> (the "."
         in the end is important).</li>
     <li>Add a <code>TXT parking=http://example.com/</code>. It must to me a link. We will use this link to create the
         "Get in touch" link.<br />You can add a mailto link: <code>TXT parking=mailto://owner@example.com</code></li>
     <li>Optionally, you can add the price: <code>TXT parking-value=1000 HNS</code>.</li>
 </ul>
+{{#if isICANN}}
+<p>We use <a href="https://www.commandlinux.com/man-page/man1/dig.1.html" target="_blank">DIG</a> to read the domain's
+    DNS data (TXT).</p>
+{{else}}
+<p>We read the data from the <a href="https://handshake.org/" target="_blank">HNS</a> blockchain.</p>
+{{/if}}
 
 <h2>How can I remove a domain?</h2>
 <p>If you don't want to display the parking page, just remove the <code>NS</code> record from the DNS.</p>

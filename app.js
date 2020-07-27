@@ -4,6 +4,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const Database = require("better-sqlite3");
+const { tldExists } = require("tldjs");
 
 const database = new Database("database.db", { verbose: console.log });
 const router = require("./routes");
@@ -22,6 +23,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, _, next) => {
   req.db = database;
+
+  const host = encodeURIComponent("justanotherdemo.xyz" || req.get("host"));
+  app.locals.host = host;
+  app.locals.isICANN = tldExists(host);
+
   next();
 });
 app.use("/", router);
