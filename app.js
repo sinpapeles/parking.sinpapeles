@@ -5,14 +5,25 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const Database = require("better-sqlite3");
 const { tldExists } = require("tldjs");
+const Handlebars = require("handlebars");
+const exphbs = require("express-handlebars");
 
 const database = new Database("database.db", { verbose: console.log });
 const router = require("./routes");
 
 const app = express();
 
+const hbs = exphbs.create({
+  helpers: {
+    isUnknownValue: function (arg1, options) {
+      return arg1 === "-1" ? options.fn(this) : options.inverse(this);
+    },
+  },
+});
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
+app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 
 app.use(logger("dev"));
@@ -24,7 +35,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use((req, _, next) => {
   req.db = database;
 
-  const host = encodeURIComponent("justanotherdemo.xyz" || req.get("host"));
+  const host = encodeURIComponent(req.get("host"));
   app.locals.host = host;
   app.locals.isICANN = tldExists(host);
 

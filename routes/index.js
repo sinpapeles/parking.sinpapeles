@@ -13,20 +13,8 @@ const {
 
 router.use(update);
 
-router.get("/", async (req, res, next) => {
-  const host = encodeURIComponent("xn--um8h" || req.get("host"));
-
-  if (
-    [
-      "parking.sinpapeles",
-      "parking.sinpapeles.xyz",
-      "localhost%3A2000",
-    ].includes(host)
-  ) {
-    next();
-    return;
-  }
-
+const index = async (h, req, res) => {
+  const host = encodeURIComponent(h);
   const data = await getName(req.db, host);
 
   if (data && data.contact) {
@@ -51,10 +39,31 @@ router.get("/", async (req, res, next) => {
       suggestion: getSubdomainSuggestion(host),
     });
   }
+};
+
+router.get("/", async (req, res, next) => {
+  const host = req.get("host");
+
+  if (
+    ["parking.sinpapeles", "parking.sinpapeles.xyz", "localhost:2000"].includes(
+      host
+    )
+  ) {
+    next();
+    return;
+  }
+
+  index(host, req, res);
 });
 
-router.get("/contact", async (req, res) => {
-  const host = encodeURIComponent(req.get("host"));
+router.get("/domain/:host", (req, res) => {
+  const { host } = req.params;
+
+  index(host, req, res);
+});
+
+router.get("/contact/:host", async (req, res) => {
+  const host = encodeURIComponent(req.params.host);
   const data = await getName(req.db, host);
 
   if (data && data.contact) {

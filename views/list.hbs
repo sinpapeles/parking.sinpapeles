@@ -4,12 +4,18 @@
     {{#each domains}}
     <tr>
         <td>
-            <a href="//{{this.name}}/">{{this.name}}</a>
+            <a href="/domain/{{this.name}}/">{{this.name}}</a>
             {{#if this.punyCode}}
             ({{this.punyCode}})
             {{/if}}
         </td>
-        <td>{{this.value}}</td>
+        <td>
+            {{#isUnknownValue this.value}}
+            <em>Unknown</em>
+            {{else}}
+            {{this.value}}
+            {{/isUnknownValue}}
+        </td>
     </tr>
     {{/each}}
 </table>

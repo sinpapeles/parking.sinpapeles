@@ -12,6 +12,8 @@
         "Get in touch" link.<br />You can add a mailto link: <code>TXT parking=mailto://owner@example.com</code></li>
     <li>Optionally, you can add the price: <code>TXT parking-value=1000 HNS</code>.</li>
 </ul>
+<p>It's important to remove any other <code>GLUE</code> or <code>NS</code> records.</p>
+
 {{#if isICANN}}
 <p>We use <a href="https://www.commandlinux.com/man-page/man1/dig.1.html" target="_blank">DIG</a> to read the domain's
     DNS data (TXT).</p>
