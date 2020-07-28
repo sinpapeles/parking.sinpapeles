@@ -262,7 +262,7 @@ const startWithFilter = (start) => {
     punycode: "😄",
   };
 
-  return new handlebars.SafeString(`<div class="align-items-end d-flex justify-content-between m-2 mb-3">
+  return new handlebars.SafeString(`<div class="align-items-end d-flex justify-content-between overflow-auto m-2 mb-3">
   ${start ? '<a href="/" class="btn btn-link">All</a>' : ""}
   ${options
     .map(
