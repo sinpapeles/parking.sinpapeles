@@ -76,8 +76,11 @@ router.get("/contact/:host", async (req, res) => {
 
 router.get("/", (req, res) => {
   const { query } = req;
-  const { page } = query;
-  const data = list(req.db, parseInt(page || 1));
+  const { page, start } = query;
+  const data = list(req.db, {
+    page: parseInt(page || 1),
+    start: encodeURIComponent(start || ""),
+  });
 
   res.render("list", { ...data, query });
 });

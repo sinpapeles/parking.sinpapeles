@@ -4,6 +4,9 @@
     <p>{{pagination.total}} item(s)</p>
 </div>
 
+{{startWithFilter query.start}}
+
+{{#if domains.length}}
 <table class="table">
     {{#each domains}}
     <tr>
@@ -23,5 +26,8 @@
     </tr>
     {{/each}}
 </table>
+{{else}}
+<div class="border alert alert-light">Nothing here</div>
+{{/if}}
 
 {{pagintation pagination query}}

@@ -150,16 +150,37 @@ const saveName = (db, name, contact, value) => {
   }
 };
 
-const list = (db, page = 1) => {
+const list = (db, { page = 1, start }) => {
+  const where = ["active=1"];
+
+  console.log({ start });
+
+  if (start) {
+    if (start === "punycode") {
+      where.push(`name LIKE 'xn--%'`);
+    } else if (start === "number") {
+      const condition = new Array(10)
+        .fill(null)
+        .map((_, i) => `name LIKE '${i}%'`)
+        .join(" OR ");
+
+      where.push(`(${condition})`);
+    } else {
+      where.push(`name LIKE '${start}%'`);
+    }
+  }
+
+  const whereStr = where.join(" AND ");
+
   const { total } = db
-    .prepare("SELECT count(*) as total FROM domains WHERE active=1")
+    .prepare(`SELECT count(*) as total FROM domains WHERE ${whereStr}`)
     .get();
   const perPage = 25;
   const offset = perPage * (page - 1);
 
   const domains = db
     .prepare(
-      `SELECT * FROM domains WHERE active=1 ORDER BY name LIMIT ${offset}, ${perPage}`
+      `SELECT * FROM domains WHERE ${whereStr} ORDER BY name LIMIT ${offset}, ${perPage}`
     )
     .all()
     .map((domain) => ({
@@ -215,9 +236,12 @@ function pagintation({ page, total, perPage }, query) {
           .map(
             (n) =>
               `<li class='page-item ${page === n && "active"}'>
-        <a class='page-link' href='?${pageUrl(n, query)}'>
-          ${n}
-        </a>
+              ${
+                page === n
+                  ? `<span class='page-link'>${n}</span>`
+                  : `<a class='page-link' href='?${pageUrl(n, query)}'>${n}</a>`
+              }
+
       </li>`
           )
           .join("")}
@@ -230,9 +254,31 @@ function pagintation({ page, total, perPage }, query) {
     </div>`);
 }
 
+const startWithFilter = (start) => {
+  // prettier-ignore
+  const options = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","number","punycode"];
+  const label = {
+    number: "#",
+    punycode: "😄",
+  };
+
+  return new handlebars.SafeString(`<div class="align-items-end d-flex justify-content-between m-2 mb-3">
+  ${start ? '<a href="/" class="btn btn-link">All</a>' : ""}
+  ${options
+    .map(
+      (option) =>
+        `<a href="?start=${option}" class="btn btn-${
+          start === option ? "primary" : "link"
+        }">${label[option] || option}</a>`
+    )
+    .join("")}
+  </div>`);
+};
+
 const helpers = {
   isUnknownValue,
   pagintation,
+  startWithFilter,
 };
 
 module.exports = {
