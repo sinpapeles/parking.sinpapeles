@@ -3,12 +3,12 @@
 }
 
 .icann .navbar {
-  margin-top: 105px;
+  margin-top: 45px;
 }
 
 @media only screen and (max-width: 535px) {
   .icann .navbar {
-    margin-top: 124px;
+    margin-top: 64px;
   }
 }
 
