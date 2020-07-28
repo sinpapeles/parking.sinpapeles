@@ -5,21 +5,15 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const Database = require("better-sqlite3");
 const { tldExists } = require("tldjs");
-const Handlebars = require("handlebars");
 const exphbs = require("express-handlebars");
+const { helpers } = require("./utils");
 
 const database = new Database("database.db", { verbose: console.log });
 const router = require("./routes");
 
 const app = express();
 
-const hbs = exphbs.create({
-  helpers: {
-    isUnknownValue: function (arg1, options) {
-      return !arg1 ? options.fn(this) : options.inverse(this);
-    },
-  },
-});
+const hbs = exphbs.create({ helpers });
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

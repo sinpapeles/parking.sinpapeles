@@ -11,7 +11,7 @@
         </td>
         <td>
             {{#isUnknownValue this.value}}
-            <em>Unknown</em>
+            &nbsp;
             {{else}}
             {{this.value}}
             {{/isUnknownValue}}
@@ -19,3 +19,5 @@
     </tr>
     {{/each}}
 </table>
+
+{{pagintation pagination query}}

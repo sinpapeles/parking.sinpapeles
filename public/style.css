@@ -18,4 +18,5 @@ footer {
   left: 0;
   right: 0;
   background-color: var(--white);
+  z-index: 3;
 }

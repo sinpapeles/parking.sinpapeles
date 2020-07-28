@@ -1,5 +1,6 @@
 const { exec } = require("child_process");
 const camelCase = require("camelcase");
+const handlebars = require("handlebars");
 const punycode = require("punycode");
 const { tldExists, getDomain } = require("tldjs");
 
@@ -149,14 +150,90 @@ const saveName = (db, name, contact, value) => {
   }
 };
 
-const list = (db) =>
-  db
-    .prepare(`SELECT * FROM domains WHERE active=1 ORDER BY name`)
+const list = (db, page = 1) => {
+  const { total } = db
+    .prepare("SELECT count(*) as total FROM domains WHERE active=1")
+    .get();
+  const perPage = 25;
+  const offset = perPage * (page - 1);
+
+  const domains = db
+    .prepare(
+      `SELECT * FROM domains WHERE active=1 ORDER BY name LIMIT ${offset}, ${perPage}`
+    )
     .all()
     .map((domain) => ({
       ...domain,
       punyCode: getPunyCode(domain.name),
     }));
+
+  return {
+    pagination: {
+      perPage,
+      total,
+      page,
+    },
+    domains,
+  };
+};
+
+function isUnknownValue(arg1, options) {
+  return !arg1 ? options.fn(this) : options.inverse(this);
+}
+
+const pageUrl = (p, query) => {
+  const params = new URLSearchParams(query);
+  params.set("page", p);
+  return params.toString();
+};
+
+function pagintation({ page, total, perPage }, query) {
+  const pages = Math.ceil(total / perPage);
+  const maxButtons = 10;
+
+  const offset =
+    pages > maxButtons
+      ? Math.max(
+          Math.min(page - Math.ceil(maxButtons / 2), pages - maxButtons + 1),
+          1
+        )
+      : 1;
+
+  const buttons = new Array(Math.min(maxButtons, pages))
+    .fill(null)
+    .map((_, index) => index + offset);
+
+  return new handlebars.SafeString(`
+    <div class="d-flex justify-content-center">
+      <ul class='pagination'>
+        <li class='page-item ${page === 1 && "disabled"}'>
+          <a class='page-link' href='?${pageUrl(1, query)}'>
+            &laquo;
+          </a>
+        </li>
+        ${buttons
+          .map(
+            (n) =>
+              `<li class='page-item ${page === n && "active"}'>
+        <a class='page-link' href='?${pageUrl(n, query)}'>
+          ${n}
+        </a>
+      </li>`
+          )
+          .join("")}
+        <li class='page-item ${page === pages && "disabled"}'>
+          <a class='page-link' href='?${pageUrl(pages, query)}'>
+            &raquo;
+          </a>
+        </li>
+      </ul>
+    </div>`);
+}
+
+const helpers = {
+  isUnknownValue,
+  pagintation,
+};
 
 module.exports = {
   list,
@@ -171,4 +248,5 @@ module.exports = {
   saveName,
   verifyString,
   verifyFullDomain,
+  helpers,
 };

@@ -75,8 +75,11 @@ router.get("/contact/:host", async (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  const domains = list(req.db);
-  res.render("list", { domains });
+  const { query } = req;
+  const { page } = query;
+  const data = list(req.db, parseInt(page || 1));
+
+  res.render("list", { ...data, query });
 });
 
 router.get("/about", (req, res) => {
