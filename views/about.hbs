@@ -6,7 +6,7 @@
 <h2>How can I add a domain?</h2>
 <p>You need to update the domain's DNS:</p>
 <ul>
-    <li>Add a <code>NS parking.sinpapeles{{#if isICANN}}.xyz{{/if}}.</code> (the "."
+    <li>Add a <code>NS parking.sinpapeles.</code> (the "."
         in the end is important).</li>
     <li>Add a <code>TXT parking=http://example.com/</code>. It must to me a link. We will use this link to create the
         "Get in touch" link.<br />You can add a mailto link: <code>TXT parking=mailto://owner@example.com</code></li>
@@ -14,11 +14,11 @@
 </ul>
 <p>It's important to remove any other <code>GLUE</code> or <code>NS</code> records.</p>
 
-{{#if isICANN}}
-<p>We use <a href="https://www.commandlinux.com/man-page/man1/dig.1.html" target="_blank">DIG</a> to read the domain's
-    DNS data (TXT).</p>
-{{else}}
 <p>We read the data from the <a href="https://handshake.org/" target="_blank">HNS</a> blockchain.</p>
+
+{{#if isICANN}}
+<div class="alert alert-light border">Keep in mind this is a service for <a href="https://handshake.org/"
+        target="_blank">HNS</a> domains. It won't work for a "regular" domain.</div>
 {{/if}}
 
 <h2>How can I remove a domain?</h2>

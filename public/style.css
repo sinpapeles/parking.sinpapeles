@@ -2,6 +2,20 @@
   margin: 60px auto;
 }
 
+.icann .navbar {
+  margin-top: 105px;
+}
+
+@media only screen and (max-width: 535px) {
+  .icann .navbar {
+    margin-top: 124px;
+  }
+}
+
+.icann #main {
+  margin: 10px auto;
+}
+
 .jumbotron {
   margin: 10vh auto 20px;
 }
