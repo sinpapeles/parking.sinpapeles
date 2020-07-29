@@ -154,8 +154,6 @@ const saveName = (db, name, contact, value, height) => {
 const list = (db, { page = 1, start }) => {
   const where = ["active=1"];
 
-  console.log({ start });
-
   if (start) {
     if (start === "punycode") {
       where.push(`name LIKE 'xn--%'`);
@@ -189,6 +187,19 @@ const list = (db, { page = 1, start }) => {
       punyCode: getPunyCode(domain.name),
     }));
 
+  const latest =
+    !start && page === 1
+      ? db
+          .prepare(
+            `SELECT * FROM domains WHERE active=1 AND last_block > 0 ORDER BY last_block DESC, value LIMIT 5`
+          )
+          .all()
+          .map((domain) => ({
+            ...domain,
+            punyCode: getPunyCode(domain.name),
+          }))
+      : [];
+
   return {
     pagination: {
       perPage,
@@ -196,6 +207,7 @@ const list = (db, { page = 1, start }) => {
       page,
     },
     domains,
+    latest,
   };
 };
 
