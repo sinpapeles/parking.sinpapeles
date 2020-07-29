@@ -129,14 +129,14 @@ const updateClicks = (db, domain) =>
 const updateViews = (db, domain) =>
   db.prepare("UPDATE domains SET views = views+1 WHERE name = ?").run(domain);
 
-const saveName = (db, name, contact, value) => {
+const saveName = (db, name, contact, value, height) => {
   try {
     return db
       .prepare(
-        `INSERT INTO domains (name, length, contact, value, active)
-                      VALUES ($name, $length, $contact, $value, $active)
+        `INSERT INTO domains (name, length, contact, value, active, first_block, last_block)
+                      VALUES ($name, $length, $contact, $value, $active, $height, $height)
                   ON CONFLICT(name)
-                   DO UPDATE SET contact=$contact, value=$value, active=$active;`
+                   DO UPDATE SET contact=$contact, value=$value, active=$active, last_block=$height;`
       )
       .run({
         name,
@@ -144,6 +144,7 @@ const saveName = (db, name, contact, value) => {
         value,
         length: name.length,
         active: !!contact ? 1 : 0,
+        height,
       });
   } catch (e) {
     console.log(e);
