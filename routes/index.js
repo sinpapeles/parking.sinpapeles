@@ -42,7 +42,7 @@ const index = async (h, req, res) => {
 };
 
 router.get("/", async (req, res, next) => {
-  const host = req.get("host");
+  const host = req.get("host").replace(/^www\./, "");
 
   if (
     ["parking.sinpapeles", "parking.sinpapeles.xyz", "localhost:2000"].includes(
