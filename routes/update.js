@@ -14,11 +14,11 @@ router.post("/update", (req, res) => {
       return res.status(400).json({ err });
     }
 
-    data.forEach(({ name, txt }) => {
+    data.forEach(({ name, txt, height }) => {
       const contact = isLink(txt.parking) ? txt.parking : null;
       const value = isPrice(txt.parkingValue) ? txt.parkingValue : "";
 
-      saveName(req.db, name, contact, value);
+      saveName(req.db, name, contact, value, height);
     });
 
     res.json({ data });
