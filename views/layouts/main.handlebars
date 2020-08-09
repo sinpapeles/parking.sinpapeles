@@ -10,6 +10,12 @@
     integrity="sha512-I5TkutApDjnWuX+smLIPZNhw+LhTd8WrQhdCKsxCFRSvhFx2km8ZfEpNIhF9nq04msHhOkE8BMOBj5QE07yhMA=="
     crossorigin="anonymous"></script> --}}
   <link rel="stylesheet" href="/style.css" />
+  {{#if stats}}
+  <meta property="og:title" content="{{host}} is available">
+  <meta property="og:description" content="Parking Sinpaples">
+  <meta property="og:image" content="https://ipsumimage.appspot.com/640x480,008cba?l={{host}}&f=fff">
+  <meta property="og:url" content="http://parking.sinpapeles/domain/{{host}}">
+  {{/if}}
 </head>
 
 <body{{#if isICANN}} class="icann" {{/if}}>
