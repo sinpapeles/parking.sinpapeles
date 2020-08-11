@@ -23,7 +23,7 @@
       href="http://parking.sinpapeles">parking.sinpapeles</a>, a free parking service for <a
       href="https://handshake.org/" target="_blank">HNS</a> domains.</div>
   {{/if}}
-  <div class="navbar navbar-expand-lg {{#unless isICANN}}fixed-top {{/unless}}navbar-dark bg-primary">
+  <div class="navbar navbar-expand-lg {{#unless isICANN}}fixed-top {{/unless}}navbar-dark bg-dark">
     <div class="container">
       <a href="{{#unless isICANN}}{{#if host}}http://parking.sinpapeles{{/if}}{{/unless}}/" class="navbar-brand">Parking
         Sinpapeles</a>
@@ -48,7 +48,7 @@
   <div class="container" id="main">
     {{{body}}}
 
-    <footer id="footer" class="bg-primary text-white">
+    <footer id="footer" class="bg-dark text-white">
       <div class="container">
         <ul class="d-flex list-unstyled">
           {{#unless isICANN}}<li class="mr-2 d-none d-sm-block"><a href="http://parking.sinpapeles">Parking
