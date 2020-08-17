@@ -200,6 +200,19 @@ const list = (db, { page = 1, start }) => {
           }))
       : [];
 
+  const popular =
+    !start && page === 1
+      ? db
+          .prepare(
+            `SELECT * FROM domains WHERE active=1 ORDER BY views DESC, clicks DESC, value LIMIT 5`
+          )
+          .all()
+          .map((domain) => ({
+            ...domain,
+            punyCode: getPunyCode(domain.name),
+          }))
+      : [];
+
   return {
     pagination: {
       perPage,
@@ -208,6 +221,7 @@ const list = (db, { page = 1, start }) => {
     },
     domains,
     latest,
+    popular,
   };
 };
 
@@ -288,10 +302,30 @@ const startWithFilter = (start) => {
   </div>`);
 };
 
+const domainTable = (domains) =>
+  domains && domains.length
+    ? new handlebars.SafeString(`<table class="table"><tr>${domains
+        .map(
+          (domain) => `
+  <td>
+      <a href="/domain/${domain.name}/">${domain.name}
+      ${domain.punyCode ? ` (${domain.punyCode})` : ""}
+      </a>
+  </td>
+  <td>
+  ${domain.value ? domain.value : "<em>Make offer</em>"}
+  </td>
+`
+        )
+        .join("</tr><tr>")}
+</tr></table>`)
+    : "";
+
 const helpers = {
   isUnknownValue,
   pagintation,
   startWithFilter,
+  domainTable,
 };
 
 module.exports = {
