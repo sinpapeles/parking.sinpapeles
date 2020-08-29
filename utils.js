@@ -91,11 +91,13 @@ const getTXT = (domain) =>
   });
 
 const isLink = (txt) =>
+  !!txt &&
   ["mailto:", "http://", "https://"].some(
     (protocol) => txt.indexOf(protocol) === 0
   );
 
-const isPrice = (txt) => /^[0-9]{1,15}(\.[0-9]{1,8})? ?[A-Z]{1,5}$/.test(txt);
+const isPrice = (txt) =>
+  !!txt && /^[0-9]{1,15}(\.[0-9]{1,8})? ?[A-Z]{1,5}$/.test(txt);
 
 const getPunyCode = (txt) => {
   try {
@@ -130,22 +132,31 @@ const updateViews = (db, domain) =>
   db.prepare("UPDATE domains SET views = views+1 WHERE name = ?").run(domain);
 
 const saveName = (db, name, contact, value, height) => {
+  const active = !!contact ? 1 : 0;
+
   try {
-    return db
-      .prepare(
-        `INSERT INTO domains (name, length, contact, value, active, first_block, last_block)
-                      VALUES ($name, $length, $contact, $value, $active, $height, $height)
+    if (active) {
+      return db
+        .prepare(
+          `INSERT INTO domains (name, length, contact, value, active, first_block, last_block)
+                      VALUES ($name, $length, $contact, $value, 1, $height, $height)
                   ON CONFLICT(name)
-                   DO UPDATE SET contact=$contact, value=$value, active=$active, last_block=$height;`
-      )
-      .run({
-        name,
-        contact,
-        value,
-        length: name.length,
-        active: !!contact ? 1 : 0,
-        height,
-      });
+                   DO UPDATE SET contact=$contact, value=$value, active=1, last_block=$height;`
+        )
+        .run({
+          name,
+          contact,
+          value,
+          length: name.length,
+          height,
+        });
+    } else {
+      return db
+        .prepare(
+          "UPDATE domains SET last_block=$height, active=0 WHERE name=$name"
+        )
+        .run({ height, name });
+    }
   } catch (e) {
     console.log(e);
   }
