@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const api = require("./api");
 const update = require("./update");
 const {
   updateViews,
@@ -11,6 +12,7 @@ const {
   list,
 } = require("../utils");
 
+router.use("/api", api);
 router.use(update);
 
 const index = async (h, req, res) => {
