@@ -21,3 +21,10 @@ try {
 } catch (e) {
   console.log("first_block, last_block already exists");
 }
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS auth (
+    name text PRIMARY KEY,
+    auth text
+) WITHOUT ROWID;
+`);

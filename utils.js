@@ -99,6 +99,8 @@ const isLink = (txt) =>
 const isPrice = (txt) =>
   !!txt && /^[0-9]{1,15}(\.[0-9]{1,8})? ?[A-Z]{1,5}$/.test(txt);
 
+const isAuth = (txt) => !!txt && /^[0-9a-f]{66}$/.test(txt);
+
 const getPunyCode = (txt) => {
   try {
     const punyCode = punycode.toUnicode(txt);
@@ -156,6 +158,24 @@ const saveName = (db, name, contact, value, height) => {
           "UPDATE domains SET last_block=$height, active=0 WHERE name=$name"
         )
         .run({ height, name });
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const saveAuth = (db, name, auth) => {
+  try {
+    if (auth) {
+      return db
+        .prepare(
+          `INSERT INTO auth (name, auth) VALUES ($name, $auth)
+               ON CONFLICT(name)
+               DO UPDATE SET auth=$auth;`
+        )
+        .run({ name, auth });
+    } else {
+      return db.prepare("DELETE FROM auth WHERE name=$name").run({ name });
     }
   } catch (e) {
     console.log(e);
@@ -344,12 +364,14 @@ module.exports = {
   getTXT,
   isLink,
   isPrice,
+  isAuth,
   getPunyCode,
   getSubdomainSuggestion,
   getName,
   updateViews,
   updateClicks,
   saveName,
+  saveAuth,
   verifyString,
   verifyFullDomain,
   helpers,
