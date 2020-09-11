@@ -130,7 +130,7 @@ const getName = (db, domain) =>
       `       SELECT d.*, m.content
                 FROM domains d
            LEFT JOIN meta m ON m.name=d.name
-               WHERE name = ?`
+               WHERE d.name = ?`
     )
     .get(domain);
 
