@@ -125,7 +125,14 @@ const getSubdomainSuggestion = (host) => {
 };
 
 const getName = (db, domain) =>
-  db.prepare("SELECT * FROM domains WHERE name = ?").get(domain);
+  db
+    .prepare(
+      `       SELECT d.*, m.content
+                FROM domains d
+           LEFT JOIN meta m ON m.name=d.name
+               WHERE name = ?`
+    )
+    .get(domain);
 
 const updateClicks = (db, domain) =>
   db.prepare("UPDATE domains SET clicks = clicks+1 WHERE name = ?").run(domain);
@@ -352,11 +359,14 @@ const domainTable = (domains) =>
 </tr></table>`)
     : "";
 
+const markdown = (content) => new handlebars.SafeString(``);
+
 const helpers = {
   isUnknownValue,
   pagintation,
   startWithFilter,
   domainTable,
+  markdown,
 };
 
 module.exports = {

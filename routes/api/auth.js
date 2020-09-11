@@ -12,7 +12,7 @@ router.get("/auth", (req, res) => {
     challenge: random.randomBytes(32).toString("hex"),
   };
 
-  data.token = jwt.sign(data, secret);
+  data.token = jwt.sign(data, secret, { expiresIn: "5m" });
 
   res.json(data);
 });
@@ -60,7 +60,7 @@ router.post("/auth", async (req, res) => {
 
   // seems legit
   const session = { domain, key };
-  session.token = jwt.sign(session, secret);
+  session.token = jwt.sign(session, secret, { expiresIn: "30m" });
 
   res.json(session);
 });

@@ -25,6 +25,13 @@ try {
 db.exec(`
 CREATE TABLE IF NOT EXISTS auth (
     name text PRIMARY KEY,
-    auth text
+    key text
+) WITHOUT ROWID;
+`);
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS meta (
+    name text PRIMARY KEY,
+    content text
 ) WITHOUT ROWID;
 `);
