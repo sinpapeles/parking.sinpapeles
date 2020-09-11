@@ -2,6 +2,7 @@ const { exec } = require("child_process");
 const camelCase = require("camelcase");
 const handlebars = require("handlebars");
 const punycode = require("punycode");
+const { Remarkable } = require("remarkable");
 const { tldExists, getDomain } = require("tldjs");
 
 const DNS_SERVER = process.env.DNS_SERVER || "server.falci.me";
@@ -359,7 +360,8 @@ const domainTable = (domains) =>
 </tr></table>`)
     : "";
 
-const markdown = (content) => new handlebars.SafeString(``);
+const md = new Remarkable();
+const markdown = (content) => new handlebars.SafeString(md.render(content));
 
 const helpers = {
   isUnknownValue,

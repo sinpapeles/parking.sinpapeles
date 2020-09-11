@@ -38,7 +38,10 @@ router.post("/domains/:domain", ownerMW, (req, res) => {
                    ON CONFLICT(name)
                    DO UPDATE SET content=$content;`;
 
-  req.db.prepare(sql).run({ domain, content });
+  req.db
+    .prepare(sql)
+    .run({ domain, content: content && content.substring(0, 1000) });
+
   res.status(204).end();
 });
 

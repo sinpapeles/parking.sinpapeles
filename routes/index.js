@@ -30,6 +30,7 @@ const index = async (h, req, res) => {
       hasPrice,
       price: data.value,
       punyCode,
+      content: data.content,
       stats: {
         clicks: data.clicks,
         views: data.views,
