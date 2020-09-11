@@ -16,7 +16,7 @@ router.get("/domains", authMW, (req, res) => {
   res.json(items);
 });
 
-router.get("/domains/:domain", authMW, (req, res) => {
+router.get("/domains/:domain", ownerMW, (req, res) => {
   const domain = encodeURIComponent(req.params.domain);
   const { key } = req.auth;
 
