@@ -177,9 +177,9 @@ const saveAuth = (db, name, auth) => {
     if (auth) {
       return db
         .prepare(
-          `INSERT INTO auth (name, auth) VALUES ($name, $auth)
+          `INSERT INTO auth (name, key) VALUES ($name, $auth)
                ON CONFLICT(name)
-               DO UPDATE SET auth=$auth;`
+               DO UPDATE SET key=$auth;`
         )
         .run({ name, auth });
     } else {
