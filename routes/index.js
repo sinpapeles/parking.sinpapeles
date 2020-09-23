@@ -88,12 +88,8 @@ router.get("/", (req, res) => {
   res.render("list", { ...data, query });
 });
 
-router.get("/about", (req, res) => {
-  res.render("about");
-});
-
-router.get("/donate", (req, res) => {
-  res.render("donate");
-});
+router.get("/about", (_, res) => res.render("about"));
+router.get("/donate", (_, res) => res.render("donate"));
+router.get("/swap", (_, res) => res.render("swap"));
 
 module.exports = router;
