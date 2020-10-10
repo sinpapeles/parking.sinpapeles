@@ -15,6 +15,15 @@
   <meta property="og:image" content="https://ipsumimage.appspot.com/640x480,008cba?l={{host}}&f=fff">
   <meta property="og:url" content="http://parking.sinpapeles/domain/{{host}}">
   {{/if}}
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-2568035-42"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-2568035-42');
+  </script>
 </head>
 
 <body{{#if isICANN}} class="icann" {{/if}}>
@@ -60,7 +69,6 @@
           <li class="mr-2"><a href="/swap">Swap</a></li>
           <li class="mr-2"><a href="/donate">Donate</a></li>
           <li class="mr-2"><a href="https://t.me/parking_sinpapale" target="_blank">Telegram</a></li>
-          <li class="flex-grow-1 text-right d-none d-sm-block">We use no cookies</li>
         </ul>
       </div>
 

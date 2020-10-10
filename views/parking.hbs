@@ -13,7 +13,8 @@
         {{/if}}
         <hr />
         <p>
-            <a href="/contact/{{host}}">Get in touch</a>
+            <a href="/contact/{{host}}" onclick="getInTouch();">Get in
+                touch</a>
         </p>
         {{#if stats.views}}
 
@@ -40,3 +41,12 @@
     {{markdown content}}
 </div>
 {{/if}}
+
+<script>
+    const getInTouch = () => {
+        gtag('event', 'getInTouch', {
+            'event_category': 'contact',
+            'event_label': '{{host}}',
+        });
+    }
+</script>
