@@ -4,6 +4,24 @@
     <p>{{pagination.total}} item(s)</p>
 </div>
 
+<form method="GET">
+    <div class="form-group">
+        <input type="text" class="form-control" name="search" placeholder="Search (allows regex)"
+            value="{{query.search}}">
+    </div>
+    <ul class="list-unstyled d-flex justify-content-between">
+        <li><a href="./?search=^[a-z]%2B$">letters</a></li>
+        <li><a href="./?search=^\d%2B$">numbers</a></li>
+        <li><a href="./?search=^\m%2B$">emoji</a></li>
+        <li><a href="./?search=^\p{Cyrillic}%2B$">cyrillic</a></li>
+        <li><a href="./?search=^\p{Han}%2B$">han</a></li>
+        <li><a href="./?search=^\p{Hangul}%2B$">hangul</a></li>
+        <li><a href="./?search=^\p{Katakana}%2B$">katakan</a></li>
+        <li><a href="./?search=^.{1}$">1 char</a></li>
+        <li><a href="./?search=^.{2}$">2 chars</a></li>
+        <li><a href="./?search=^.{3}$">3 chars</a></li>
+    </ul>
+</form>
 {{startWithFilter query.start}}
 
 {{#if domains.length}}
@@ -12,16 +30,16 @@
         {{domainTable domains}}
     </div>
     <div class="col col-md-auto">
-        {{#if popular.length}}
-        <div class="card mb-3">
-            <div class="card-header">Popular Domains</div>
-            {{domainTable popular}}
-        </div>
-        {{/if}}
         {{#if latest.length}}
         <div class="card mb-3">
             <div class="card-header">Latest Domains</div>
             {{domainTable latest}}
+        </div>
+        {{/if}}
+        {{#if popular.length}}
+        <div class="card mb-3">
+            <div class="card-header">Popular Domains</div>
+            {{domainTable popular}}
         </div>
         {{/if}}
     </div>

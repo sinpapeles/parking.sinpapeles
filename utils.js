@@ -5,6 +5,8 @@ const punycode = require('punycode');
 const { Remarkable } = require('remarkable');
 const { tldExists, getDomain } = require('tldjs');
 const { URL } = require('url');
+const XRegExp = require('xregexp');
+const emojiRegex = require('emoji-regex');
 
 const DNS_SERVER = process.env.DNS_SERVER || 'server.falci.me';
 const DNS_PORT = process.env.DNS_PORT || '12053';
@@ -185,12 +187,19 @@ const saveAuth = (db, name, auth) => {
     }
 };
 
-const list = (db, { page = 1, start }) => {
-    const where = ['active=1'];
+const list = (db, { page = 1, start, search }) => {
+    const where = ['active=?'];
+    const params = [1];
+
+    if (search) {
+        where.push(`name REGEXP ?`);
+        params.push(search);
+    }
 
     if (start) {
         if (start === 'punycode') {
-            where.push(`name LIKE 'xn--%'`);
+            where.push(`name LIKE ?`);
+            params.push('xn--%');
         } else if (start === 'number') {
             const condition = new Array(10)
                 .fill(null)
@@ -199,13 +208,18 @@ const list = (db, { page = 1, start }) => {
 
             where.push(`(${condition})`);
         } else {
-            where.push(`name LIKE '${start}%'`);
+            where.push(`name LIKE ?`);
+            params.push(`${start}%`);
         }
     }
 
+    const hasFilters = !!search || !!start;
+
     const whereStr = where.join(' AND ');
 
-    const { total } = db.prepare(`SELECT count(*) as total FROM domains WHERE ${whereStr}`).get();
+    const { total } = db
+        .prepare(`SELECT count(*) as total FROM domains WHERE ${whereStr}`)
+        .get(...params);
     const perPage = 25;
     const offset = perPage * (page - 1);
 
@@ -213,14 +227,14 @@ const list = (db, { page = 1, start }) => {
         .prepare(
             `SELECT * FROM domains WHERE ${whereStr} ORDER BY name LIMIT ${offset}, ${perPage}`
         )
-        .all()
+        .all(...params)
         .map(domain => ({
             ...domain,
             punyCode: getPunyCode(domain.name),
         }));
 
     const latest =
-        !start && page === 1
+        !hasFilters && page === 1
             ? db
                   .prepare(
                       `SELECT * FROM domains WHERE active=1 AND last_block > 0 ORDER BY last_block DESC, value LIMIT 5`
@@ -233,7 +247,7 @@ const list = (db, { page = 1, start }) => {
             : [];
 
     const popular =
-        !start && page === 1
+        !hasFilters && page === 1
             ? db
                   .prepare(
                       `SELECT * FROM domains WHERE active=1 ORDER BY views DESC, clicks DESC, value LIMIT 5`
@@ -310,7 +324,7 @@ function pagintation({ page, total, perPage }, query) {
     </div>`);
 }
 
-const startWithFilter = start => {
+const startWithFilter = (start, hasOtherFilters) => {
     // prettier-ignore
     const options = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","number","punycode"];
     const label = {
@@ -318,8 +332,8 @@ const startWithFilter = start => {
         punycode: '😄',
     };
 
-    return new handlebars.SafeString(`<div class="align-items-end d-flex justify-content-between overflow-auto m-2 mb-3">
-  ${start ? '<a href="/" class="btn btn-link">All</a>' : ''}
+    return new handlebars.SafeString(`<div class="align-items-end d-flex justify-content-between overflow-auto mb-3">
+  ${start || hasOtherFilters ? '<a href="/" class="btn btn-link">All</a>' : ''}
   ${options
       .map(
           option =>
@@ -337,11 +351,12 @@ const domainTable = domains =>
               .map(
                   domain => `
   <td>
-      <a href="/domain/${domain.name}/">${domain.name}
-      ${domain.punyCode ? ` (${domain.punyCode})` : ''}
+  ${domain.punyCode ? `${domain.punyCode} &nbsp;` : ''}
+      <a href="/domain/${domain.name}/">
+      ${domain.name}
       </a>
   </td>
-  <td>
+  <td class="text-nowrap">
   ${domain.value ? domain.value : '<em>Make offer</em>'}
   </td>
 `
@@ -382,6 +397,20 @@ const richContact = (contact, name) => {
     return url.href.replace('+', '%20');
 };
 
+const databaseRegex = database => {
+    const emojiExpression = `(${emojiRegex().source})`;
+
+    XRegExp.addToken(/\\m/, () => emojiExpression, {
+        scope: 'default',
+    });
+
+    database.function('REGEXP', { deterministic: true }, function (regex, str) {
+        const r = XRegExp(decodeURIComponent(regex), 'i');
+
+        return r.test(str) || r.test(getPunyCode(str)) ? 1 : 0;
+    });
+};
+
 module.exports = {
     list,
     getTXT,
@@ -399,4 +428,5 @@ module.exports = {
     verifyFullDomain,
     helpers,
     richContact,
+    databaseRegex,
 };
