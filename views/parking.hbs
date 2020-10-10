@@ -44,7 +44,7 @@
 
 <script>
     const getInTouch = () => {
-        gtag('event', 'getInTouch', {
+        gtag && gtag('event', 'getInTouch', {
             'event_category': 'contact',
             'event_label': '{{host}}',
         });
