@@ -406,8 +406,9 @@ const databaseRegex = database => {
 
     database.function('REGEXP', { deterministic: true }, function (regex, str) {
         const r = XRegExp(decodeURIComponent(regex), 'i');
+        const puny = getPunyCode(str);
 
-        return r.test(str) || r.test(getPunyCode(str)) ? 1 : 0;
+        return r.test(str) || (puny && r.test(puny)) ? 1 : 0;
     });
 };
 
