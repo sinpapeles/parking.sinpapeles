@@ -9,17 +9,17 @@
         <input type="text" class="form-control" name="search" placeholder="Search (allows regex)"
             value="{{query.search}}">
     </div>
-    <ul class="list-unstyled d-flex justify-content-between">
-        <li><a href="./?search=^[a-z]%2B$">letters</a></li>
-        <li><a href="./?search=^\d%2B$">numbers</a></li>
-        <li><a href="./?search=^\m%2B$">emoji</a></li>
-        <li><a href="./?search=^\p{Cyrillic}%2B$">cyrillic</a></li>
-        <li><a href="./?search=^\p{Han}%2B$">han</a></li>
-        <li><a href="./?search=^\p{Hangul}%2B$">hangul</a></li>
-        <li><a href="./?search=^\p{Katakana}%2B$">katakana</a></li>
-        <li><a href="./?search=^.{1}$">1 char</a></li>
-        <li><a href="./?search=^.{2}$">2 chars</a></li>
-        <li><a href="./?search=^.{3}$">3 chars</a></li>
+    <ul class="list-unstyled d-flex justify-content-between overflow-auto">
+        <li class="mr-3"><a href="./?search=^[a-z]%2B$">letters</a></li>
+        <li class="mr-3"><a href="./?search=^\d%2B$">numbers</a></li>
+        <li class="mr-3"><a href="./?search=^\m%2B$">emoji</a></li>
+        <li class="mr-3"><a href="./?search=^\p{Cyrillic}%2B$">cyrillic</a></li>
+        <li class="mr-3"><a href="./?search=^\p{Han}%2B$">han</a></li>
+        <li class="mr-3"><a href="./?search=^\p{Hangul}%2B$">hangul</a></li>
+        <li class="mr-3"><a href="./?search=^\p{Katakana}%2B$">katakana</a></li>
+        <li class="mr-3 text-nowrap"><a href="./?search=^.{1}$">1 char</a></li>
+        <li class="mr-3 text-nowrap"><a href="./?search=^.{2}$">2 chars</a></li>
+        <li class="text-nowrap"><a href="./?search=^.{3}$">3 chars</a></li>
     </ul>
 </form>
 {{startWithFilter query.start}}
