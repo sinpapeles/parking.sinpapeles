@@ -379,7 +379,7 @@ const richContact = (contact, name) => {
             .forEach(([key, value]) => searchParams.set(key, value));
     }
 
-    return url.href;
+    return url.href.replace('+', '%20');
 };
 
 module.exports = {
