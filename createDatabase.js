@@ -1,5 +1,5 @@
-const Database = require("better-sqlite3");
-const db = new Database("database.db", { verbose: console.log });
+const Database = require('better-sqlite3');
+const db = new Database('database.db', { verbose: console.log });
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS domains (
@@ -16,10 +16,10 @@ CREATE INDEX IF NOT EXISTS length ON domains(length);
 `);
 
 try {
-  db.exec(`ALTER TABLE domains ADD COLUMN first_block integer DEFAULT 0`);
-  db.exec(`ALTER TABLE domains ADD COLUMN last_block integer DEFAULT 0`);
+    db.exec(`ALTER TABLE domains ADD COLUMN first_block integer DEFAULT 0`);
+    db.exec(`ALTER TABLE domains ADD COLUMN last_block integer DEFAULT 0`);
 } catch (e) {
-  console.log("first_block, last_block already exists");
+    console.log('first_block, last_block already exists');
 }
 
 db.exec(`
@@ -35,3 +35,9 @@ CREATE TABLE IF NOT EXISTS meta (
     content text
 ) WITHOUT ROWID;
 `);
+
+try {
+    db.exec(`ALTER TABLE domains ADD COLUMN ga_code text`);
+} catch (e) {
+    console.log('ga_code already exists');
+}

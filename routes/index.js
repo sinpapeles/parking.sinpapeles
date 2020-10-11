@@ -30,6 +30,7 @@ const index = async (h, req, res) => {
             host,
             hasPrice,
             price: data.value,
+            gaCode: data.ga_code,
             punyCode,
             content: data.content,
             stats: {
