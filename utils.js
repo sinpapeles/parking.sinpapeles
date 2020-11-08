@@ -232,6 +232,7 @@ const list = (db, { page = 1, start, search }) => {
             ...domain,
             punyCode: getPunyCode(domain.name),
         }));
+    domains.showScore = true;
 
     const latest =
         !hasFilters && page === 1
@@ -356,6 +357,11 @@ const domainTable = domains =>
       ${domain.name}
       </a>
   </td>
+  ${
+      domains.showScore
+          ? `<td><a href="https://www.niami.io/domain/${domain.name}" target="_blank" rel="noopener noreferrer" title="Check the Niami's score">Score</a></td>`
+          : ''
+  }
   <td class="text-nowrap">
   ${domain.value ? domain.value : '<em>Make offer</em>'}
   </td>
