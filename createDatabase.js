@@ -1,5 +1,6 @@
 const Database = require('better-sqlite3');
 const db = new Database('database.db', { verbose: console.log });
+const { v4: uuid } = require('uuid');
 
 db.exec(`
 CREATE TABLE IF NOT EXISTS domains (
@@ -41,3 +42,21 @@ try {
 } catch (e) {
     console.log('ga_code already exists');
 }
+
+db.exec(`
+CREATE TABLE IF NOT EXISTS contact (
+    id text PRIMARY KEY,
+    contact text UNIQUE
+) WITHOUT ROWID;
+`);
+
+db.prepare('SELECT contact FROM `domains` group by contact')
+    .all()
+    .forEach(({ contact }) => {
+        const id = uuid();
+
+        db.prepare(`INSERT OR IGNORE INTO contact (id, contact) VALUES ($id, $contact)`).run({
+            id,
+            contact,
+        });
+    });

@@ -7,6 +7,7 @@ const { tldExists, getDomain } = require('tldjs');
 const { URL } = require('url');
 const XRegExp = require('xregexp');
 const emojiRegex = require('emoji-regex');
+const { v4: uuid } = require('uuid');
 
 const DNS_SERVER = process.env.DNS_SERVER || 'server.falci.me';
 const DNS_PORT = process.env.DNS_PORT || '12053';
@@ -127,10 +128,11 @@ const getSubdomainSuggestion = host => {
 const getName = (db, domain) =>
     db
         .prepare(
-            `       SELECT d.*, m.content
+            `       SELECT d.*, m.content, c.id as seller
                 FROM domains d
            LEFT JOIN meta m ON m.name=d.name
-               WHERE d.name = ?`
+           LEFT JOIN contact c ON c.contact=d.contact
+               WHERE d.name = ? AND d.active=1`
         )
         .get(domain);
 
@@ -145,6 +147,11 @@ const saveName = (db, name, contact, value, height) => {
 
     try {
         if (active) {
+            db.prepare('INSERT OR IGNORE INTO contact (id, contact) VALUES ($id, $contact)').run({
+                id: uuid(),
+                contact,
+            });
+
             return db
                 .prepare(
                     `INSERT INTO domains (name, length, contact, value, active, first_block, last_block)
@@ -187,7 +194,7 @@ const saveAuth = (db, name, auth) => {
     }
 };
 
-const list = (db, { page = 1, start, search }) => {
+const list = (db, { page = 1, start, search, seller }) => {
     const where = ['active=?'];
     const params = [1];
 
@@ -213,19 +220,32 @@ const list = (db, { page = 1, start, search }) => {
         }
     }
 
+    if (seller) {
+        where.push(`c.id = ?`);
+        params.push(seller);
+    }
+
     const hasFilters = !!search || !!start;
 
     const whereStr = where.join(' AND ');
 
     const { total } = db
-        .prepare(`SELECT count(*) as total FROM domains WHERE ${whereStr}`)
+        .prepare(
+            `SELECT count(d.name) as total FROM domains d
+              LEFT JOIN contact c ON c.contact=d.contact
+                  WHERE ${whereStr}`
+        )
         .get(...params);
     const perPage = 25;
     const offset = perPage * (page - 1);
 
     const domains = db
         .prepare(
-            `SELECT * FROM domains WHERE ${whereStr} ORDER BY name LIMIT ${offset}, ${perPage}`
+            `SELECT d.* FROM domains d
+          LEFT JOIN contact c ON c.contact=d.contact
+              WHERE ${whereStr}
+              ORDER BY name
+              LIMIT ${offset}, ${perPage}`
         )
         .all(...params)
         .map(domain => ({
