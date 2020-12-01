@@ -225,7 +225,7 @@ const list = (db, { page = 1, start, search, seller }) => {
         params.push(seller);
     }
 
-    const hasFilters = !!search || !!start;
+    const hasFilters = !!search || !!start || !!seller;
 
     const whereStr = where.join(' AND ');
 
