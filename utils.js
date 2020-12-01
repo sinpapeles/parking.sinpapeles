@@ -371,7 +371,7 @@ const domainTable = domains =>
         ? new handlebars.SafeString(`<table class="table"><tr>${domains
               .map(
                   domain => `
-  <td>
+  <td class="col-name ${domain.punyCode ? 'col-puny' : ''}">
   ${domain.punyCode ? `${domain.punyCode} &nbsp;` : ''}
       <a href="/domain/${domain.name}/">
       ${domain.name}

@@ -1,39 +1,43 @@
-@import url("/light.css") (prefers-color-scheme: light);
-@import url("/dark.css") (prefers-color-scheme: dark);
+@import url('/light.css') (prefers-color-scheme: light);
+@import url('/dark.css') (prefers-color-scheme: dark);
 
 #main {
-  margin: 60px auto;
+    margin: 60px auto;
 }
 
 .icann .navbar {
-  margin-top: 45px;
+    margin-top: 45px;
 }
 
 @media only screen and (max-width: 535px) {
-  .icann .navbar {
-    margin-top: 64px;
-  }
+    .icann .navbar {
+        margin-top: 64px;
+    }
 }
 
 .icann #main {
-  margin: 10px auto;
+    margin: 10px auto;
+}
+
+.sidebar .col-name {
+    max-width: 240px;
 }
 
 .jumbotron {
-  margin: 10vh auto 20px;
+    margin: 10vh auto 20px;
 }
 .parking {
-  text-align: center;
-  width: 500px;
-  max-width: calc(100vw - 100px);
-  margin: 0 auto;
+    text-align: center;
+    width: 500px;
+    max-width: calc(100vw - 100px);
+    margin: 0 auto;
 }
 
 footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding-top: 5px;
-  z-index: 3;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-top: 5px;
+    z-index: 3;
 }
