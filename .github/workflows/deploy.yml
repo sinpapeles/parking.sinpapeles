@@ -1,0 +1,36 @@
+name: Deploy Prod
+on:
+    push:
+        branches: [master]
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                node-version: [12.x]
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Set up SSH
+              run: |
+                  mkdir -p ~/.ssh/
+                  echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+                  sudo chmod 600 ~/.ssh/id_rsa
+                  echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+              shell: bash
+              env:
+                  SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+                  SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+
+            - name: Install Yarn/PM2
+              run: npm install -g yarn pm2
+
+            - name: Deploy
+              run: yarn deploy:prod
