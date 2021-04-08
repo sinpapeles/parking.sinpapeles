@@ -1,4 +1,7 @@
 {
+    "auth": {
+        "secret": "SECRET"
+    },
     "hsd": {
         "apiKey": "HSD_API_KEY"
     },
