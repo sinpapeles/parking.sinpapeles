@@ -18,13 +18,13 @@ router.use(update);
 
 const index = async (h, req, res) => {
     const host = encodeURIComponent(h);
-    const data = await getName(req.db, host);
+    const data = await getName(host);
 
     if (data && data.contact) {
         const hasPrice = isPrice(data.value);
         const punyCode = getPunyCode(host);
 
-        updateViews(req.db, host);
+        updateViews(host);
 
         res.render('parking', {
             host,
@@ -66,10 +66,10 @@ router.get('/domain/:host', (req, res) => {
 
 router.get('/contact/:host', async (req, res) => {
     const host = encodeURIComponent(req.params.host);
-    const data = await getName(req.db, host);
+    const data = await getName(host);
 
     if (data && data.contact) {
-        updateClicks(req.db, host);
+        updateClicks(host);
         return res.redirect(richContact(data.contact, host));
     }
 
@@ -79,7 +79,7 @@ router.get('/contact/:host', async (req, res) => {
 router.get('/', (req, res) => {
     const { query } = req;
     const { page, start, search, seller } = query;
-    const data = list(req.db, {
+    const data = list({
         page: parseInt(page || 1),
         start: encodeURIComponent(start || ''),
         search: encodeURIComponent(search || ''),

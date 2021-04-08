@@ -3,13 +3,10 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const Database = require('better-sqlite3');
 const { tldExists } = require('tldjs');
 const exphbs = require('express-handlebars');
-const { helpers, databaseRegex } = require('./utils');
-
-const database = new Database('database.db', { verbose: console.log });
-databaseRegex(database);
+const { helpers } = require('./utils');
+const database = require('./database');
 
 const router = require('./routes');
 
