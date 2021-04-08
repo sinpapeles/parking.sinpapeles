@@ -4,6 +4,10 @@ module.exports = {
             name: 'parking',
             script: 'bin/www',
         },
+        {
+            name: 'webhook',
+            script: 'bin/webhook',
+        },
     ],
 
     deploy: {

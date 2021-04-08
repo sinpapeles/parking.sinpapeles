@@ -1,17 +1,12 @@
-const { exec } = require('child_process');
-const camelCase = require('camelcase');
 const handlebars = require('handlebars');
 const punycode = require('punycode');
 const { Remarkable } = require('remarkable');
 const { tldExists, getDomain } = require('tldjs');
 const { URL } = require('url');
-const XRegExp = require('xregexp');
-const emojiRegex = require('emoji-regex');
 const { v4: uuid } = require('uuid');
-
-const DNS_SERVER = process.env.DNS_SERVER || 'server.falci.me';
-const DNS_PORT = process.env.DNS_PORT || '12053';
-console.log({ DNS_SERVER, DNS_PORT });
+const db = require('./database');
+const config = require('config');
+const axios = require('axios');
 
 // prettier-ignore
 const CHARSET = new Uint8Array([
@@ -69,32 +64,6 @@ const verifyString = str => {
     return true;
 };
 
-const getTXT = domain =>
-    new Promise((resolve, reject) => {
-        if (!verifyFullDomain(domain)) {
-            return new Promise.reject();
-        }
-
-        const command = `dig @${DNS_SERVER} -p ${DNS_PORT} ${domain} TXT +short`;
-        exec(command, (error, out) => {
-            if (error) {
-                return reject(error);
-            }
-
-            resolve(
-                out
-                    .split('\n')
-                    .map(line => line.substring(1, line.length - 1))
-                    .filter(line => line.indexOf('parking') === 0)
-                    .reduce((data, line) => {
-                        const [key, value] = line.split(/=(.+)/);
-                        const camel = camelCase(key);
-                        return { ...data, [camel]: value };
-                    }, {})
-            );
-        });
-    });
-
 const isLink = txt =>
     !!txt && ['mailto:', 'http://', 'https://'].some(protocol => txt.indexOf(protocol) === 0);
 
@@ -102,12 +71,23 @@ const isPrice = txt => !!txt && /^[0-9]{1,15}(\.[0-9]{1,8})? ?[A-Z]{1,5}$/.test(
 
 const isAuth = txt => !!txt && /^[0-9a-f]{66}$/.test(txt);
 
+// return punycode or false
 const getPunyCode = txt => {
     try {
         const punyCode = punycode.toUnicode(txt);
         return punyCode !== txt && punyCode;
     } catch (e) {
         return false;
+    }
+};
+
+// returns punycode + name or just name
+const getPunycode = name => {
+    try {
+        const p = punycode.toUnicode(name);
+        return p === name ? name : `${p} ${name}`;
+    } catch (e) {
+        return name;
     }
 };
 
@@ -125,7 +105,7 @@ const getSubdomainSuggestion = host => {
     }
 };
 
-const getName = (db, domain) =>
+const getName = domain =>
     db
         .prepare(
             `       SELECT d.*, m.content, c.id as seller
@@ -136,13 +116,13 @@ const getName = (db, domain) =>
         )
         .get(domain);
 
-const updateClicks = (db, domain) =>
+const updateClicks = domain =>
     db.prepare('UPDATE domains SET clicks = clicks+1 WHERE name = ?').run(domain);
 
-const updateViews = (db, domain) =>
+const updateViews = domain =>
     db.prepare('UPDATE domains SET views = views+1 WHERE name = ?').run(domain);
 
-const saveName = (db, name, contact, value, height) => {
+const saveName = (name, contact, value, height) => {
     const active = !!contact ? 1 : 0;
 
     try {
@@ -176,7 +156,7 @@ const saveName = (db, name, contact, value, height) => {
     }
 };
 
-const saveAuth = (db, name, auth) => {
+const saveAuth = (name, auth) => {
     try {
         if (auth) {
             return db
@@ -194,7 +174,7 @@ const saveAuth = (db, name, auth) => {
     }
 };
 
-const list = (db, { page = 1, start, search, seller }) => {
+const list = ({ page = 1, start, search, seller }) => {
     const where = ['active=?'];
     const params = [1];
 
@@ -423,37 +403,38 @@ const richContact = (contact, name) => {
     return url.href.replace('+', '%20');
 };
 
-const databaseRegex = database => {
-    const emojiExpression = `(${emojiRegex().source})`;
+const getNewNames = height =>
+    db.prepare(`SELECT name FROM domains WHERE active=1 AND first_block=?`).all(height);
 
-    XRegExp.addToken(/\\m/, () => emojiExpression, {
-        scope: 'default',
-    });
-
-    database.function('REGEXP', { deterministic: true }, function (regex, str) {
-        const r = XRegExp(decodeURIComponent(regex), 'i');
-        const puny = getPunyCode(str);
-
-        return r.test(str) || (puny && r.test(puny)) ? 1 : 0;
-    });
+const sendTelegram = message => {
+    const { token, channel } = config.telegram;
+    axios
+        .post(`https://api.telegram.org/bot${token}/sendMessage`, {
+            chat_id: channel,
+            text: message,
+            parse_mode: 'MarkdownV2',
+            disable_notification: true,
+        })
+        .catch(e => console.log(e.response.data));
 };
 
 module.exports = {
-    list,
-    getTXT,
+    getName,
+    getNewNames,
+    getPunyCode,
+    getPunycode,
+    getSubdomainSuggestion,
+    helpers,
+    isAuth,
     isLink,
     isPrice,
-    isAuth,
-    getPunyCode,
-    getSubdomainSuggestion,
-    getName,
-    updateViews,
-    updateClicks,
-    saveName,
-    saveAuth,
-    verifyString,
-    verifyFullDomain,
-    helpers,
+    list,
     richContact,
-    databaseRegex,
+    saveAuth,
+    saveName,
+    sendTelegram,
+    updateClicks,
+    updateViews,
+    verifyFullDomain,
+    verifyString,
 };

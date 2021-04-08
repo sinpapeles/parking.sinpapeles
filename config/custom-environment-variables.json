@@ -1,0 +1,8 @@
+{
+    "hsd": {
+        "apiKey": "HSD_API_KEY"
+    },
+    "telegram": {
+        "token": "TELEGRAM"
+    }
+}

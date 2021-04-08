@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+var webhook = require('../webhook');
+
+(async () => {
+    const close = await webhook();
+
+    process.on('SIGTERM', close);
+})();
