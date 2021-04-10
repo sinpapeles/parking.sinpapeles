@@ -23,6 +23,8 @@ client.bind('chain connect', async raw => {
     onNewBlock(height);
 });
 
+// onNewBlock(62579);
+
 const onNewBlock = async height => {
     const data = await getParking(height);
 

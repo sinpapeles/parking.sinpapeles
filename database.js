@@ -1,6 +1,16 @@
 const Database = require('better-sqlite3');
 const emojiRegex = require('emoji-regex');
 const XRegExp = require('xregexp');
+const punycode = require('punycode');
+
+const getPunyCode = txt => {
+    try {
+        const punyCode = punycode.toUnicode(txt);
+        return punyCode !== txt && punyCode;
+    } catch (e) {
+        return false;
+    }
+};
 
 const databaseRegex = database => {
     const emojiExpression = `(${emojiRegex().source})`;
