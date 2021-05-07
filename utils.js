@@ -7,6 +7,8 @@ const { v4: uuid } = require('uuid');
 const db = require('./database');
 const config = require('config');
 const axios = require('axios');
+const { parseTweet } = require('twitter-text');
+const Twitter = require('twitter');
 
 // prettier-ignore
 const CHARSET = new Uint8Array([
@@ -418,6 +420,27 @@ const sendTelegram = message => {
         .catch(e => console.log(e.response.data));
 };
 
+const sentTwitter = async status => new Twitter(config.twitter).post('statuses/update', { status });
+
+const processAndSendTwitter = parking => {
+    const domains = parking.length > 1 ? 'domains' : 'domain';
+
+    let twitterText = `${parking.length} new ${domains} added to Parking.Sinpapeles:`;
+    for (let i = 0; i < parking.length; i++) {
+        const next = getPunycode(parking[i].name);
+        const more = i < parking.length - 1 ? '\nand more...' : '';
+
+        if (parseTweet(`${twitterText}\n${next}${more}`).valid) {
+            twitterText += `\n${next}`;
+        } else {
+            twitterText += '\nand more...';
+            break;
+        }
+    }
+
+    sentTwitter(twitterText).catch(e => console.log(e));
+};
+
 module.exports = {
     getName,
     getNewNames,
@@ -429,6 +452,7 @@ module.exports = {
     isLink,
     isPrice,
     list,
+    processAndSendTwitter,
     richContact,
     saveAuth,
     saveName,
