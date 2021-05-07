@@ -10,6 +10,7 @@ const {
     getNewNames,
     getPunycode,
     sendTelegram,
+    processAndSendTwitter,
 } = require('./utils');
 
 module.exports = async () => {
@@ -43,5 +44,7 @@ const onNewBlock = async height => {
     if (parking.length) {
         sendTelegram(`*Parking Sinpapeles:* ${parking.length} new domain\\(s\\):
 ${parking.map(p => getPunycode(p.name).replace(/-/g, '\\-').replace(/_/g, '\\_')).join('\n')}`);
+
+        processAndSendTwitter(parking);
     }
 };
