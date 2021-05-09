@@ -420,6 +420,7 @@ const sendTelegram = message => {
         .catch(e => console.log(e.response.data));
 };
 
+console.log('Twitter keys: ', !!config.twitter.consumer_key ? 'defined' : 'not defined');
 const sentTwitter = async status => new Twitter(config.twitter).post('statuses/update', { status });
 
 const processAndSendTwitter = parking => {
