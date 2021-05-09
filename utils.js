@@ -424,18 +424,21 @@ const sentTwitter = async status => new Twitter(config.twitter).post('statuses/u
 
 const processAndSendTwitter = parking => {
     const domains = parking.length > 1 ? 'domains' : 'domain';
+    const hashtag = `\n\n#HNS`;
 
     let twitterText = `${parking.length} new ${domains} added to Parking.Sinpapeles:`;
     for (let i = 0; i < parking.length; i++) {
         const next = getPunycode(parking[i].name);
         const more = i < parking.length - 1 ? '\nand more...' : '';
 
-        if (parseTweet(`${twitterText}\n${next}${more}`).valid) {
+        if (parseTweet(`${twitterText}\n${next}${more}${hashtag}`).valid) {
             twitterText += `\n${next}`;
         } else {
             twitterText += '\nand more...';
             break;
         }
+
+        twitterText += hashtag;
     }
 
     sentTwitter(twitterText).catch(e => console.log(e));
