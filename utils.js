@@ -437,9 +437,8 @@ const processAndSendTwitter = parking => {
             twitterText += '\nand more...';
             break;
         }
-
-        twitterText += hashtag;
     }
+    twitterText += hashtag;
 
     sentTwitter(twitterText).catch(e => console.log(e));
 };
