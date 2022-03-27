@@ -23,7 +23,7 @@
         "hsd": "^2.4.0",
         "http-errors": "~1.6.3",
         "jsonwebtoken": "^8.5.1",
-        "minimist": "^0.2.1",
+        "minimist": "^1.2.6",
         "morgan": "~1.9.1",
         "punycode": "^2.1.1",
         "remarkable": "^2.0.1",
